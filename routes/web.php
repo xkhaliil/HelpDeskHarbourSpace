@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Userzone\DashboardController;
-use App\Http\Controllers\Userzone\ProfileController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,7 +16,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 require __DIR__.'/auth.php';
 
 /*
- * Userzone routes
+ * Routes for logged-in users
  */
 Route::middleware('auth')->group(function () {
     // For the user's dashboard (after login)
