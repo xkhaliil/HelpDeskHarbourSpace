@@ -23,7 +23,7 @@ test('users can authenticate using the login screen', function () {
 test('users are redirected back to where they came from after login', function () {
     $user = User::factory()->create();
 
-    $this->get(route('login', ['redirect' => '/articles/1#comments']));
+    $this->get(route('login', ['redirect' => '/profile']));
 
     $response = $this->post('/login', [
         'email' => $user->email,
@@ -31,7 +31,7 @@ test('users are redirected back to where they came from after login', function (
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect('/articles/1#comments');
+    $response->assertRedirect('/profile');
 });
 
 test('users are not redirected to external urls after login', function () {
