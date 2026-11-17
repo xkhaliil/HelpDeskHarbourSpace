@@ -11,9 +11,15 @@
                 <!-- Navigation Links -->
                 @auth
                     <div class="hidden h-full gap-6 sm:flex">
-                        <x-breeze.nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                            Dashboard
-                        </x-breeze.nav-link>
+                        @if (auth()->user()->isAdmin())
+                            <x-breeze.nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                                Admin
+                            </x-breeze.nav-link>
+                        @else
+                            <x-breeze.nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                                Dashboard
+                            </x-breeze.nav-link>
+                        @endif
                     </div>
                 @endauth
             </div>
@@ -72,9 +78,15 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden border-t border-white/10 sm:hidden">
         @auth
             <div class="space-y-1 pb-3 pt-2">
-                <x-breeze.responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                    Dashboard
-                </x-breeze.responsive-nav-link>
+                @if (auth()->user()->isAdmin())
+                    <x-breeze.responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                        Admin
+                    </x-breeze.responsive-nav-link>
+                @else
+                    <x-breeze.responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        Dashboard
+                    </x-breeze.responsive-nav-link>
+                @endif
             </div>
 
             <!-- Responsive Settings Options -->

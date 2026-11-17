@@ -9,13 +9,13 @@ use Symfony\Component\HttpFoundation\Response;
 class IsAdmin
 {
     /**
-     * Handle an incoming request.
+     * Only let users with the admin role through, everybody else gets a 403.
      *
      * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->user()->is_admin == false) {
+        if (! $request->user() || ! $request->user()->isAdmin()) {
             abort(403);
         }
 
