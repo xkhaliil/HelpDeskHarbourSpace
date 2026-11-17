@@ -1,0 +1,16 @@
+/*
+  Harbour.Space HelpDesk theme.
+  The brand colours and the font are defined once here and used everywhere
+  through Tailwind classes such as bg-harbour, text-harbour and bg-ink.
+  This file is also loaded by the CDN fallback in layouts/app.blade.php.
+*/
+@theme {
+    --font-sans:
+        Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-harbour: #3c237f;
+    --color-harbour-dark: #2a1860;
+    --color-harbour-light: #eeeaf7;
+    --color-ink: #111111;
+}

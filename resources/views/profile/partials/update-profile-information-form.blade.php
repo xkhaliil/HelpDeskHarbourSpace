@@ -1,6 +1,6 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-black uppercase tracking-tight text-ink">
             Profile Information
         </h2>
 
@@ -33,7 +33,7 @@
                     <p class="text-sm mt-2 text-gray-800">
                         Your email address is unverified.
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <button form="send-verification" class="underline text-sm text-harbour hover:text-harbour-dark rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-harbour">
                             Click here to re-send the verification email.
                         </button>
                     </p>

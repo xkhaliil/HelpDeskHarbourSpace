@@ -1,31 +1,33 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.
-    </div>
-
-    @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600">
-            A new verification link has been sent to the email address you provided during registration.
+<x-app-layout title="Verify email">
+    <x-card class="mx-auto max-w-md sm:p-8">
+        <div class="mb-4 text-sm text-gray-600">
+            Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.
         </div>
-    @endif
 
-    <div class="mt-4 flex items-center justify-between">
-        <form method="POST" action="{{ route('verification.send') }}">
-            @csrf
-
-            <div>
-                <x-breeze.primary-button>
-                    Resend Verification Email
-                </x-breeze.primary-button>
+        @if (session('status') == 'verification-link-sent')
+            <div class="mb-4 font-medium text-sm text-green-600">
+                A new verification link has been sent to the email address you provided during registration.
             </div>
-        </form>
+        @endif
 
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
+        <div class="mt-4 flex items-center justify-between">
+            <form method="POST" action="{{ route('verification.send') }}">
+                @csrf
 
-            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Log Out
-            </button>
-        </form>
-    </div>
-</x-guest-layout>
+                <div>
+                    <x-breeze.primary-button>
+                        Resend Verification Email
+                    </x-breeze.primary-button>
+                </div>
+            </form>
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+
+                <button type="submit" class="underline text-sm text-harbour hover:text-harbour-dark rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-harbour">
+                    Log Out
+                </button>
+            </form>
+        </div>
+    </x-card>
+</x-app-layout>
