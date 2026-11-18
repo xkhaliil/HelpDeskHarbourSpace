@@ -13,7 +13,8 @@
             <!-- Email Address -->
             <div class="mt-4">
                 <x-breeze.input-label for="email" value="Email" />
-                <x-breeze.text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+                <x-breeze.text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="name@{{ config('helpdesk.email_domain') }}" />
+                <p class="mt-1 text-xs text-gray-500">Use your university email address (ending in &#64;{{ config('helpdesk.email_domain') }}).</p>
                 <x-breeze.input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
