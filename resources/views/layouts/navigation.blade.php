@@ -22,6 +22,12 @@
                             <x-breeze.nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 Dashboard
                             </x-breeze.nav-link>
+                            <x-breeze.nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index', 'tickets.show', 'tickets.edit')">
+                                My tickets
+                            </x-breeze.nav-link>
+                            <x-breeze.nav-link :href="route('tickets.create')" :active="request()->routeIs('tickets.create')">
+                                New ticket
+                            </x-breeze.nav-link>
                         @endif
                     </div>
                 @endauth
@@ -91,6 +97,12 @@
                 @else
                     <x-breeze.responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         Dashboard
+                    </x-breeze.responsive-nav-link>
+                    <x-breeze.responsive-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index', 'tickets.show', 'tickets.edit')">
+                        My tickets
+                    </x-breeze.responsive-nav-link>
+                    <x-breeze.responsive-nav-link :href="route('tickets.create')" :active="request()->routeIs('tickets.create')">
+                        New ticket
                     </x-breeze.responsive-nav-link>
                 @endif
             </div>
