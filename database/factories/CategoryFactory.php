@@ -18,7 +18,18 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(),
+            'name' => fake()->unique()->randomElement([
+                'Wi-Fi & Network',
+                'Accounts & Portal',
+                'Classroom Equipment',
+                'Laptop & Software',
+                'Building & Facilities',
+                'Printing & Scanning',
+                'Audio & Video',
+                'Email & Calendar',
+                'Access Cards & Security',
+                'Furniture & Rooms',
+            ]),
         ];
     }
 }
