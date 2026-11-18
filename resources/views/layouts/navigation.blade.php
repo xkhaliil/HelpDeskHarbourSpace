@@ -15,6 +15,9 @@
                             <x-breeze.nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                                 Admin
                             </x-breeze.nav-link>
+                            <x-breeze.nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                                Categories
+                            </x-breeze.nav-link>
                         @else
                             <x-breeze.nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 Dashboard
@@ -81,6 +84,9 @@
                 @if (auth()->user()->isAdmin())
                     <x-breeze.responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                         Admin
+                    </x-breeze.responsive-nav-link>
+                    <x-breeze.responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                        Categories
                     </x-breeze.responsive-nav-link>
                 @else
                     <x-breeze.responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
