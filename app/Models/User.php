@@ -61,6 +61,16 @@ class User extends Authenticatable
         return $this->hasMany(Ticket::class);
     }
 
+    /**
+     * The replies this user has written.
+     *
+     * @return HasMany<Reply, $this>
+     */
+    public function replies(): HasMany
+    {
+        return $this->hasMany(Reply::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === Role::Admin;

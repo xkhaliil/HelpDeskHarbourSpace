@@ -3,6 +3,7 @@
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Models\Category;
+use App\Models\Reply;
 use App\Models\Ticket;
 use App\Models\User;
 
@@ -142,6 +143,15 @@ test('owners can delete an open ticket', function () {
         ->assertSessionHas('success', 'Your ticket has been deleted.');
 
     $this->assertModelMissing($ticket);
+});
+
+test('deleting a ticket also deletes its replies', function () {
+    $ticket = Ticket::factory()->open()->create();
+    $reply = Reply::factory()->for($ticket)->fromStaff()->create();
+
+    $this->actingAs($ticket->user)->delete("/tickets/{$ticket->id}");
+
+    $this->assertModelMissing($reply);
 });
 
 test('owners cannot edit or delete a ticket that is no longer open', function (string $status) {
