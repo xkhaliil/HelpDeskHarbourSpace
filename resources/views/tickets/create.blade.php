@@ -1,6 +1,6 @@
 <x-app-layout title="New ticket">
     <x-card class="max-w-2xl sm:p-8">
-        <form action="{{ route('tickets.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('tickets.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
             @include('tickets.partials.form', ['ticket' => null])

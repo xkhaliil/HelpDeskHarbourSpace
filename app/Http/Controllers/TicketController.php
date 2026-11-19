@@ -47,7 +47,14 @@ class TicketController extends Controller
      */
     public function store(StoreTicketRequest $request): RedirectResponse
     {
-        $ticket = $request->user()->tickets()->create($request->validated());
+        $data = $request->safe()->except('screenshot');
+
+        if ($request->hasFile('screenshot')) {
+            // Saved in storage/app/public/screenshots, visible after "php artisan storage:link".
+            $data['screenshot'] = $request->file('screenshot')->store('screenshots', 'public');
+        }
+
+        $ticket = $request->user()->tickets()->create($data);
 
         return redirect()->route('tickets.show', $ticket)
             ->with('success', 'Your ticket has been created. The IT and campus team will look at it soon.');
@@ -84,7 +91,15 @@ class TicketController extends Controller
     {
         Gate::authorize('update', $ticket);
 
-        $ticket->update($request->validated());
+        $data = $request->safe()->except('screenshot');
+
+        if ($request->hasFile('screenshot')) {
+            // A new image replaces the old one.
+            $ticket->deleteScreenshot();
+            $data['screenshot'] = $request->file('screenshot')->store('screenshots', 'public');
+        }
+
+        $ticket->update($data);
 
         return redirect()->route('tickets.show', $ticket)
             ->with('success', 'Your ticket has been updated.');
@@ -97,6 +112,7 @@ class TicketController extends Controller
     {
         Gate::authorize('delete', $ticket);
 
+        $ticket->deleteScreenshot();
         $ticket->delete();
 
         return redirect()->route('tickets.index')

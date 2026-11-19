@@ -8,6 +8,7 @@ use Database\Factories\TicketFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class Ticket extends Model
 {
@@ -59,5 +60,27 @@ class Ticket extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * The URL of the uploaded screenshot, or null when there is no (existing) image.
+     */
+    public function screenshotUrl(): ?string
+    {
+        if ($this->screenshot === null || ! Storage::disk('public')->exists($this->screenshot)) {
+            return null;
+        }
+
+        return asset('storage/'.$this->screenshot);
+    }
+
+    /**
+     * Remove the uploaded screenshot file from the public disk.
+     */
+    public function deleteScreenshot(): void
+    {
+        if ($this->screenshot !== null) {
+            Storage::disk('public')->delete($this->screenshot);
+        }
     }
 }

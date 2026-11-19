@@ -1,6 +1,6 @@
 <x-app-layout title="Edit ticket">
     <x-card class="max-w-2xl sm:p-8">
-        <form action="{{ route('tickets.update', $ticket) }}" method="POST" class="space-y-6">
+        <form action="{{ route('tickets.update', $ticket) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
 
