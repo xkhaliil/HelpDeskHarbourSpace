@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\TicketPriority;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTicketRequest extends FormRequest
 {
@@ -28,6 +30,8 @@ class StoreTicketRequest extends FormRequest
             'location' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'min:10', 'max:5000'],
             'screenshot' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            // Only used for teachers, see TicketController.
+            'priority' => ['nullable', Rule::in(TicketPriority::values())],
         ];
     }
 

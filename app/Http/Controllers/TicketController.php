@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Http\Requests\FilterTicketsRequest;
 use App\Http\Requests\StoreTicketRequest;
@@ -37,9 +38,10 @@ class TicketController extends Controller
      */
     public function create(): View
     {
-        $categories = Category::orderBy('name')->get();
-
-        return view('tickets.create', compact('categories'));
+        return view('tickets.create', [
+            'categories' => Category::orderBy('name')->get(),
+            'priorities' => TicketPriority::cases(),
+        ]);
     }
 
     /**
@@ -47,7 +49,15 @@ class TicketController extends Controller
      */
     public function store(StoreTicketRequest $request): RedirectResponse
     {
-        $data = $request->safe()->except('screenshot');
+        $data = $request->safe()->except(['screenshot', 'priority']);
+
+        // Only teachers may choose a priority. For students it is always "normal",
+        // even when somebody adds a priority field to the request by hand.
+        if ($request->user()->isTeacher()) {
+            $data['priority'] = $request->validated('priority') ?? TicketPriority::Normal->value;
+        } else {
+            $data['priority'] = TicketPriority::Normal->value;
+        }
 
         if ($request->hasFile('screenshot')) {
             // Saved in storage/app/public/screenshots, visible after "php artisan storage:link".
@@ -79,9 +89,11 @@ class TicketController extends Controller
     {
         Gate::authorize('update', $ticket);
 
-        $categories = Category::orderBy('name')->get();
-
-        return view('tickets.edit', compact('ticket', 'categories'));
+        return view('tickets.edit', [
+            'ticket' => $ticket,
+            'categories' => Category::orderBy('name')->get(),
+            'priorities' => TicketPriority::cases(),
+        ]);
     }
 
     /**
@@ -91,7 +103,12 @@ class TicketController extends Controller
     {
         Gate::authorize('update', $ticket);
 
-        $data = $request->safe()->except('screenshot');
+        $data = $request->safe()->except(['screenshot', 'priority']);
+
+        // Teachers may change the priority. For students it stays what it was.
+        if ($request->user()->isTeacher() && $request->filled('priority')) {
+            $data['priority'] = $request->validated('priority');
+        }
 
         if ($request->hasFile('screenshot')) {
             // A new image replaces the old one.
