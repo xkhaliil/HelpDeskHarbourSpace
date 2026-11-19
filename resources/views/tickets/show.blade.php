@@ -13,6 +13,18 @@
         @endcan
     </x-slot>
 
+    @can('close', $ticket)
+        <div class="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+            <p class="text-sm font-medium text-emerald-900">The IT and campus team marked this problem as solved. Is everything working again?</p>
+
+            <form action="{{ route('tickets.close', $ticket) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <x-breeze.primary-button>Yes, close the ticket</x-breeze.primary-button>
+            </form>
+        </div>
+    @endcan
+
     <div class="grid gap-6 lg:grid-cols-3">
         <div class="space-y-6 lg:col-span-2">
             <x-card>

@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
 
     // Students and teachers manage their own tickets (see App\Policies\TicketPolicy)
     Route::resource('tickets', TicketController::class);
+    Route::patch('/tickets/{ticket}/close', [TicketController::class, 'close'])->name('tickets.close');
     Route::post('/tickets/{ticket}/replies', [ReplyController::class, 'store'])->name('tickets.replies.store');
 
     // For the user's profile management

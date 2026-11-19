@@ -154,6 +154,39 @@ test('deleting a ticket also deletes its replies', function () {
     $this->assertModelMissing($reply);
 });
 
+test('owners can close a solved ticket', function () {
+    $ticket = Ticket::factory()->solved()->create();
+
+    $this->actingAs($ticket->user)
+        ->get("/tickets/{$ticket->id}")
+        ->assertSee('Yes, close the ticket');
+
+    $this->actingAs($ticket->user)
+        ->patch("/tickets/{$ticket->id}/close")
+        ->assertRedirect("/tickets/{$ticket->id}")
+        ->assertSessionHas('success');
+
+    expect($ticket->refresh()->status)->toBe(TicketStatus::Closed);
+});
+
+test('a ticket can only be closed when it is solved', function (string $status) {
+    $ticket = Ticket::factory()->{$status}()->create();
+
+    $this->actingAs($ticket->user)
+        ->patch("/tickets/{$ticket->id}/close")
+        ->assertForbidden();
+})->with(['open', 'inProgress', 'closed']);
+
+test('only the owner can close a ticket', function () {
+    $ticket = Ticket::factory()->solved()->create();
+
+    $this->actingAs(User::factory()->student()->create())
+        ->patch("/tickets/{$ticket->id}/close")
+        ->assertForbidden();
+
+    expect($ticket->refresh()->status)->toBe(TicketStatus::Solved);
+});
+
 test('owners cannot edit or delete a ticket that is no longer open', function (string $status) {
     $ticket = Ticket::factory()->{$status}()->create();
 

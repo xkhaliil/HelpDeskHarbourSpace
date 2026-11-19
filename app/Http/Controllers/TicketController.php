@@ -123,6 +123,19 @@ class TicketController extends Controller
     }
 
     /**
+     * Close a solved ticket: the owner confirms that the problem is gone.
+     */
+    public function close(Ticket $ticket): RedirectResponse
+    {
+        Gate::authorize('close', $ticket);
+
+        $ticket->update(['status' => TicketStatus::Closed]);
+
+        return redirect()->route('tickets.show', $ticket)
+            ->with('success', 'Thanks for confirming! The ticket is now closed.');
+    }
+
+    /**
      * Delete an open ticket.
      */
     public function destroy(Ticket $ticket): RedirectResponse

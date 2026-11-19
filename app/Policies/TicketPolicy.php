@@ -34,6 +34,14 @@ class TicketPolicy
     }
 
     /**
+     * When the IT team has solved the problem, the owner confirms it by closing the ticket.
+     */
+    public function close(User $user, Ticket $ticket): bool
+    {
+        return $ticket->user_id === $user->id && $ticket->status === TicketStatus::Solved;
+    }
+
+    /**
      * The owner and the admins can talk about a ticket until it is closed.
      */
     public function reply(User $user, Ticket $ticket): bool
