@@ -16,7 +16,7 @@ class CategoryController extends Controller
      */
     public function index(): View
     {
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::withCount('tickets')->orderBy('name')->get();
 
         return view('admin.categories.index', compact('categories'));
     }
@@ -45,7 +45,9 @@ class CategoryController extends Controller
      */
     public function show(Category $category): View
     {
-        return view('admin.categories.show', compact('category'));
+        $tickets = $category->tickets()->with('user')->latest()->paginate(10);
+
+        return view('admin.categories.show', compact('category', 'tickets'));
     }
 
     /**
@@ -72,6 +74,13 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category): RedirectResponse
     {
+        // A category that is still used by tickets cannot be deleted,
+        // otherwise those tickets would point to a category that no longer exists.
+        if ($category->tickets()->exists()) {
+            return redirect()->route('admin.categories.index')
+                ->with('error', "The category \"{$category->name}\" still has tickets, so it cannot be deleted.");
+        }
+
         $category->delete();
 
         return redirect()->route('admin.categories.index')

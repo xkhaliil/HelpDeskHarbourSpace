@@ -8,6 +8,7 @@
             <thead class="bg-gray-50 text-xs font-bold uppercase tracking-widest text-gray-500">
                 <tr>
                     <th scope="col" class="px-4 py-3">Name</th>
+                    <th scope="col" class="px-4 py-3">Tickets</th>
                     <th scope="col" class="px-4 py-3 text-right">Actions</th>
                 </tr>
             </thead>
@@ -17,6 +18,7 @@
                         <td class="px-4 py-3 font-semibold">
                             <a href="{{ route('admin.categories.show', $category) }}" class="hover:text-harbour hover:underline">{{ $category->name }}</a>
                         </td>
+                        <td class="px-4 py-3 text-gray-600">{{ $category->tickets_count }}</td>
                         <td class="px-4 py-3">
                             <div class="flex items-center justify-end gap-4 text-xs font-bold uppercase tracking-widest">
                                 <a href="{{ route('admin.categories.show', $category) }}" class="text-gray-600 hover:text-ink">View</a>
@@ -32,7 +34,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="2" class="px-4 py-8 text-center text-gray-500">No categories yet.</td>
+                        <td colspan="3" class="px-4 py-8 text-center text-gray-500">No categories yet.</td>
                     </tr>
                 @endforelse
             </tbody>

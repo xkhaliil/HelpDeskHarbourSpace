@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Category;
+use App\Models\Ticket;
 use App\Models\User;
 
 test('admins see all categories', function () {
@@ -64,6 +65,28 @@ test('admins can rename a category and keep its own name', function () {
         ->assertSessionHas('success', 'The category has been updated.');
 
     expect($category->refresh()->name)->toBe('Audio & Video');
+});
+
+test('a category that still has tickets cannot be deleted', function () {
+    $category = Category::factory()->create(['name' => 'Audio & Video']);
+    Ticket::factory()->for($category)->create();
+
+    $this->actingAs(User::factory()->admin()->create())
+        ->delete("/admin/categories/{$category->id}")
+        ->assertRedirect('/admin/categories')
+        ->assertSessionHas('error', 'The category "Audio & Video" still has tickets, so it cannot be deleted.');
+
+    $this->assertModelExists($category);
+});
+
+test('the category page lists its tickets', function () {
+    $category = Category::factory()->create();
+    Ticket::factory()->for($category)->create(['title' => 'Projector does not turn on']);
+
+    $this->actingAs(User::factory()->admin()->create())
+        ->get("/admin/categories/{$category->id}")
+        ->assertOk()
+        ->assertSee('Projector does not turn on');
 });
 
 test('admins can delete a category', function () {
