@@ -77,7 +77,7 @@ class TicketController extends Controller
     {
         Gate::authorize('view', $ticket);
 
-        $ticket->load('category');
+        $ticket->load(['category', 'replies.user']);
 
         return view('tickets.show', compact('ticket'));
     }

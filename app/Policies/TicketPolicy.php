@@ -32,4 +32,16 @@ class TicketPolicy
     {
         return $ticket->user_id === $user->id && $ticket->status === TicketStatus::Open;
     }
+
+    /**
+     * The owner and the admins can talk about a ticket until it is closed.
+     */
+    public function reply(User $user, Ticket $ticket): bool
+    {
+        if ($ticket->status === TicketStatus::Closed) {
+            return false;
+        }
+
+        return $ticket->user_id === $user->id || $user->isAdmin();
+    }
 }

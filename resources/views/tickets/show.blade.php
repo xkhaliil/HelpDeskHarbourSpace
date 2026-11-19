@@ -28,6 +28,8 @@
                     </a>
                 </x-card>
             @endif
+
+            @include('tickets.partials.conversation')
         </div>
 
         <aside>
