@@ -7,8 +7,10 @@ use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminFilterTicketsRequest;
+use App\Http\Requests\AdminUpdateTicketRequest;
 use App\Models\Category;
 use App\Models\Ticket;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class TicketController extends Controller
@@ -51,5 +53,30 @@ class TicketController extends Controller
             'priorities' => TicketPriority::cases(),
             'roles' => Role::cases(),
         ]);
+    }
+
+    /**
+     * Show one ticket so an admin can handle it.
+     */
+    public function show(Ticket $ticket): View
+    {
+        $ticket->load(['user', 'category', 'replies.user']);
+
+        return view('admin.tickets.show', [
+            'ticket' => $ticket,
+            'statuses' => TicketStatus::cases(),
+            'priorities' => TicketPriority::cases(),
+        ]);
+    }
+
+    /**
+     * Change the status and the priority of a ticket.
+     */
+    public function update(AdminUpdateTicketRequest $request, Ticket $ticket): RedirectResponse
+    {
+        $ticket->update($request->validated());
+
+        return redirect()->route('admin.tickets.show', $ticket)
+            ->with('success', 'The ticket has been updated.');
     }
 }

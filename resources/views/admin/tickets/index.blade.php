@@ -53,7 +53,7 @@
                 @forelse ($tickets as $ticket)
                     <tr>
                         <td class="px-4 py-3 font-semibold">
-                            {{ $ticket->title }}
+                            <a href="{{ route('admin.tickets.show', $ticket) }}" class="hover:text-harbour hover:underline">{{ $ticket->title }}</a>
                             <div class="text-xs font-normal text-gray-500">{{ $ticket->location }}</div>
                         </td>
                         <td class="px-4 py-3">

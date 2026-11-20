@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [Admin\DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('tickets', Admin\TicketController::class)->only(['index']);
+    Route::resource('tickets', Admin\TicketController::class)->only(['index', 'show', 'update']);
 
     Route::resource('categories', Admin\CategoryController::class);
 });

@@ -20,7 +20,9 @@
             <tbody class="divide-y divide-gray-200 bg-white">
                 @forelse ($tickets as $ticket)
                     <tr>
-                        <td class="px-4 py-3 font-semibold">{{ $ticket->title }}</td>
+                        <td class="px-4 py-3 font-semibold">
+                            <a href="{{ route('admin.tickets.show', $ticket) }}" class="hover:text-harbour hover:underline">{{ $ticket->title }}</a>
+                        </td>
                         <td class="px-4 py-3">{{ $ticket->user->name }}</td>
                         <td class="px-4 py-3"><x-badge :value="$ticket->status" /></td>
                         <td class="px-4 py-3"><x-badge :value="$ticket->priority" /></td>

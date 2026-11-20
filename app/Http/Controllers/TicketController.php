@@ -73,8 +73,13 @@ class TicketController extends Controller
     /**
      * Show one ticket of the logged-in user.
      */
-    public function show(Ticket $ticket): View
+    public function show(Ticket $ticket): View|RedirectResponse
     {
+        // Admins handle tickets on their own page in the admin panel.
+        if (auth()->user()->isAdmin()) {
+            return redirect()->route('admin.tickets.show', $ticket);
+        }
+
         Gate::authorize('view', $ticket);
 
         $ticket->load(['category', 'replies.user']);
