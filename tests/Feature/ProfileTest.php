@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Reply;
+use App\Models\Ticket;
 use App\Models\User;
 
 test('profile page is displayed', function () {
@@ -65,6 +67,21 @@ test('user can delete their account', function () {
 
     $this->assertGuest();
     expect($user->fresh())->toBeNull();
+});
+
+test('a user with tickets and replies can delete their account', function () {
+    $user = User::factory()->create();
+    $ticket = Ticket::factory()->for($user)->create();
+    $replyOnOtherTicket = Reply::factory()->for($user)->create();
+
+    $this->actingAs($user)
+        ->delete('/profile', ['password' => 'password'])
+        ->assertSessionHasNoErrors()
+        ->assertRedirect('/');
+
+    expect($user->fresh())->toBeNull();
+    $this->assertModelMissing($ticket);
+    $this->assertModelMissing($replyOnOtherTicket);
 });
 
 test('correct password must be provided to delete account', function () {
