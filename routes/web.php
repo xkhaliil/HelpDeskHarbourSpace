@@ -23,7 +23,7 @@ require __DIR__.'/auth.php';
  */
 Route::middleware('auth')->group(function () {
     // For the user's dashboard (after login)
-    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Students and teachers manage their own tickets (see App\Policies\TicketPolicy)
     Route::resource('tickets', TicketController::class);
