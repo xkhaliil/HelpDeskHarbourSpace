@@ -45,4 +45,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('tickets', Admin\TicketController::class)->only(['index', 'show', 'update']);
 
     Route::resource('categories', Admin\CategoryController::class);
+
+    Route::resource('users', Admin\UserController::class)->only(['index', 'update']);
 });

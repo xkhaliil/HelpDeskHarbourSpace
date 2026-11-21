@@ -21,6 +21,9 @@
                             <x-breeze.nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
                                 Categories
                             </x-breeze.nav-link>
+                            <x-breeze.nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                                Users
+                            </x-breeze.nav-link>
                         @else
                             <x-breeze.nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 Dashboard
@@ -99,6 +102,9 @@
                     </x-breeze.responsive-nav-link>
                     <x-breeze.responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
                         Categories
+                    </x-breeze.responsive-nav-link>
+                    <x-breeze.responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                        Users
                     </x-breeze.responsive-nav-link>
                 @else
                     <x-breeze.responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
