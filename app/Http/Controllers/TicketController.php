@@ -18,8 +18,13 @@ class TicketController extends Controller
     /**
      * Show the tickets of the logged-in user, optionally filtered by status.
      */
-    public function index(FilterTicketsRequest $request): View
+    public function index(FilterTicketsRequest $request): View|RedirectResponse
     {
+        // Admins see all tickets in the admin panel.
+        if ($request->user()->isAdmin()) {
+            return redirect()->route('admin.tickets.index');
+        }
+
         $query = $request->user()->tickets()->with('category')->latest();
 
         if ($request->filled('status')) {
@@ -90,8 +95,13 @@ class TicketController extends Controller
     /**
      * Show the form to edit an open ticket.
      */
-    public function edit(Ticket $ticket): View
+    public function edit(Ticket $ticket): View|RedirectResponse
     {
+        // Admins handle tickets on their own page in the admin panel.
+        if (auth()->user()->isAdmin()) {
+            return redirect()->route('admin.tickets.show', $ticket);
+        }
+
         Gate::authorize('update', $ticket);
 
         return view('tickets.edit', [

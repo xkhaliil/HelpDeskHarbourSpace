@@ -18,12 +18,13 @@ test('admins can open any ticket with its conversation', function () {
         ->assertSee($ticket->user->email);
 });
 
-test('admins are sent from the user ticket page to the admin ticket page', function () {
+test('admins are sent from the user ticket pages to the admin panel', function () {
     $ticket = Ticket::factory()->create();
+    $admin = User::factory()->admin()->create();
 
-    $this->actingAs(User::factory()->admin()->create())
-        ->get("/tickets/{$ticket->id}")
-        ->assertRedirect("/admin/tickets/{$ticket->id}");
+    $this->actingAs($admin)->get('/tickets')->assertRedirect('/admin/tickets');
+    $this->actingAs($admin)->get("/tickets/{$ticket->id}")->assertRedirect("/admin/tickets/{$ticket->id}");
+    $this->actingAs($admin)->get("/tickets/{$ticket->id}/edit")->assertRedirect("/admin/tickets/{$ticket->id}");
 });
 
 test('admins can change the status and the priority', function () {
