@@ -9,7 +9,12 @@
             @production
             @else
                 <div class="mb-6 rounded-md bg-harbour-light p-3 text-sm text-harbour">
-                    test@example.com + password OR admin@admin.com + password
+                    <p class="font-bold">Demo accounts (password: password)</p>
+                    <ul class="mt-1">
+                        <li>admin@admin.com</li>
+                        <li>teacher@harbour.space</li>
+                        <li>student@harbour.space</li>
+                    </ul>
                 </div>
             @endproduction
 
