@@ -9,9 +9,9 @@ test('registration screen can be rendered', function () {
     $response->assertStatus(200);
 });
 
-test('new users can register with a university email address', function (string $email) {
+test('a university address gets its role and can start right away', function (string $email, Role $role) {
     $response = $this->post('/register', [
-        'name' => 'Test User',
+        'name' => 'Khalil Ltaief',
         'email' => $email,
         'password' => 'password',
         'password_confirmation' => 'password',
@@ -19,50 +19,59 @@ test('new users can register with a university email address', function (string 
 
     $this->assertAuthenticated();
     $response->assertRedirect(route('dashboard', absolute: false));
+
+    $user = User::where('email', $email)->first();
+    expect($user->role)->toBe($role)
+        ->and($user->isApproved())->toBeTrue();
 })->with([
-    'main domain' => 'test@harbour.space',
-    'subdomain' => 'test@student.harbour.space',
+    'student address' => ['khalil.ltaief@student.harbour.space', Role::Student],
+    'teacher address' => ['khalil.ltaief@teacher.harbour.space', Role::Teacher],
 ]);
 
-test('new users always get the student role', function () {
-    $this->post('/register', [
-        'name' => 'Test User',
-        'email' => 'test@harbour.space',
-        'password' => 'password',
-        'password_confirmation' => 'password',
-        'role' => 'admin',
-    ]);
-
-    expect(User::where('email', 'test@harbour.space')->first()->role)->toBe(Role::Student);
-});
-
-test('registration is refused for an email address outside the university', function (string $email) {
+test('any other address has to wait for the approval of an admin', function (string $email) {
     $response = $this->post('/register', [
-        'name' => 'Test User',
+        'name' => 'Khalil Ltaief',
         'email' => $email,
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);
 
     $this->assertGuest();
-    $response->assertSessionHasErrors([
-        'email' => 'Please use your university email address (ending in @harbour.space).',
-    ]);
+    $response->assertRedirect(route('login', absolute: false))
+        ->assertSessionHas('status', 'Your account has been created. An administrator has to approve it before you can log in.');
+
+    $user = User::where('email', $email)->first();
+    expect($user->role)->toBe(Role::Student)
+        ->and($user->isApproved())->toBeFalse();
 })->with([
-    'other domain' => 'test@example.com',
-    'look-alike domain' => 'test@fake-harbour.space',
-    'domain as subdomain' => 'test@harbour.space.example.com',
+    'personal address' => 'khalil.ltaief@gmail.com',
+    'staff address' => 'khalil.ltaief@harbour.space',
+    'look-alike domain' => 'khalil.ltaief@fake-student.harbour.space',
+    'domain inside another domain' => 'khalil.ltaief@student.harbour.space.example.com',
 ]);
 
-test('the university domain comes from the helpdesk config', function () {
-    config(['helpdesk.email_domain' => 'example.edu']);
+test('the role cannot be chosen in the registration form', function () {
+    $this->post('/register', [
+        'name' => 'Khalil Ltaief',
+        'email' => 'khalil.ltaief@student.harbour.space',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+        'role' => 'admin',
+    ]);
+
+    expect(User::where('email', 'khalil.ltaief@student.harbour.space')->first()->role)->toBe(Role::Student);
+});
+
+test('the university domains come from the helpdesk config', function () {
+    config(['helpdesk.teacher_email_domain' => 'staff.example.edu']);
 
     $this->post('/register', [
-        'name' => 'Test User',
-        'email' => 'test@example.edu',
+        'name' => 'Khalil Ltaief',
+        'email' => 'khalil@staff.example.edu',
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);
 
     $this->assertAuthenticated();
+    expect(User::where('email', 'khalil@staff.example.edu')->first()->role)->toBe(Role::Teacher);
 });

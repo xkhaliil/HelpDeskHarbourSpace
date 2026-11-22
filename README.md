@@ -32,7 +32,13 @@ Then open http://127.0.0.1:8000.
 
 `php artisan storage:link` makes the uploaded ticket screenshots (saved in `storage/app/public/screenshots`) visible in the browser. The app also works without screenshots.
 
-Only email addresses of the university domain can register. The domain is set in `config/helpdesk.php` (`HELPDESK_EMAIL_DOMAIN` in `.env`, default `harbour.space`, subdomains like `student.harbour.space` are allowed). New accounts always get the role `student`.
+The email address decides what happens when somebody registers:
+
+- `name@student.harbour.space`: the account is a **student** and can be used right away.
+- `name@teacher.harbour.space`: the account is a **teacher** and can be used right away.
+- Any other address: the account is created, but it can only log in after an admin approves it on the **Users** page of the admin panel.
+
+The two domains are set in `config/helpdesk.php` (`HELPDESK_STUDENT_EMAIL_DOMAIN` and `HELPDESK_TEACHER_EMAIL_DOMAIN` in `.env`).
 
 ## Demo accounts
 

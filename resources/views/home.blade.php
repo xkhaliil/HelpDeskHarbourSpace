@@ -33,8 +33,9 @@
                     <span class="text-5xl font-black text-harbour">01</span>
                     <h3 class="mt-4 text-lg font-black uppercase tracking-tight">Log in</h3>
                     <p class="mt-2 text-gray-600">
-                        Log in, or create an account with your university email address
-                        (ending in &#64;{{ config('helpdesk.email_domain') }}).
+                        Log in, or create an account. With your &#64;{{ config('helpdesk.student_email_domain') }}
+                        or &#64;{{ config('helpdesk.teacher_email_domain') }} address you can start right away.
+                        Other addresses are approved by an administrator first.
                     </p>
                 </li>
                 <li class="rounded-xl border border-gray-200 p-6">
