@@ -48,6 +48,18 @@ test('users are not redirected to external urls after login', function () {
     $response->assertRedirect(route('dashboard', absolute: false));
 });
 
+test('users can not log in before an admin approved their account', function () {
+    $user = User::factory()->unapproved()->create();
+
+    $response = $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
+
+    $this->assertGuest();
+    $response->assertSessionHasErrors(['email' => 'Your account is waiting for approval by an administrator.']);
+});
+
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 

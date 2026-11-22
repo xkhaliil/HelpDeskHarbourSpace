@@ -25,6 +25,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'approved_at',
     ];
 
     /**
@@ -48,7 +49,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => Role::class,
+            'approved_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Only approved accounts can log in. See LoginRequest::authenticate().
+     */
+    public function isApproved(): bool
+    {
+        return $this->approved_at !== null;
     }
 
     /**

@@ -50,6 +50,15 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // The password is correct, but an admin still has to approve this account.
+        if (! Auth::user()->isApproved()) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Your account is waiting for approval by an administrator.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 
