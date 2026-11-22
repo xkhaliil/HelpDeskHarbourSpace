@@ -83,7 +83,7 @@
     @endif
 
     <!-- Call to action -->
-    <section class="bg-ink text-white">
+    <section class="border-b border-white/10 bg-ink text-white">
         <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-4 py-16 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-black uppercase tracking-tight">Ready to report a problem?</h2>
 

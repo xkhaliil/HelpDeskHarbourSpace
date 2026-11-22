@@ -4,9 +4,9 @@
     </x-slot>
 
     <!-- Greeting with the logged-in user -->
-    <p class="mb-8 flex flex-wrap items-center gap-2 text-lg">
+    <p class="mb-8 text-lg">
         Hello <span class="font-bold">{{ auth()->user()->name }}</span>, you are logged in as
-        <x-badge :value="auth()->user()->role" />
+        <x-badge :value="auth()->user()->role" class="ml-1 align-middle" />
     </p>
 
     <!-- Number of own tickets per status -->
