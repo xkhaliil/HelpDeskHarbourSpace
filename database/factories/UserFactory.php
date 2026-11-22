@@ -25,9 +25,13 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $firstName = fake()->firstName();
+        $lastName = fake()->unique()->lastName();
+
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->userName().'@harbour.space',
+            'name' => $firstName.' '.$lastName,
+            // A university address that matches the name, like "marta.vidal@harbour.space".
+            'email' => Str::slug($firstName.' '.$lastName, '.').'@harbour.space',
             'role' => Role::Student,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),

@@ -18,14 +18,14 @@ class ReplyFactory extends Factory
      * @var list<string>
      */
     protected const USER_MESSAGES = [
-        'Thanks! It happened again this morning, in the same room.',
-        'I restarted my laptop, but the problem is still there.',
+        'Thanks! It happened again this morning.',
+        'It is still not working, unfortunately.',
         'It works now, thank you very much for the quick help!',
         'Is there any update? I have a class there tomorrow at 9:00.',
         'It only happens in the afternoon. In the morning everything is fine.',
         'A classmate has exactly the same problem.',
-        'I will be in the room until 18:00 if someone can come by.',
-        'I tried another cable, but that did not help.',
+        'I will be there until 18:00 if someone can come by.',
+        'Thanks for the quick answer!',
     ];
 
     /**
@@ -34,14 +34,16 @@ class ReplyFactory extends Factory
      * @var list<string>
      */
     protected const STAFF_MESSAGES = [
-        'Thanks for reporting this. A technician will come by this afternoon.',
-        'We restarted the access point on that floor. Can you check if it works now?',
+        'Thanks for reporting this. A colleague will come by this afternoon.',
+        'We are looking into it and will keep you updated here.',
         'We ordered a replacement part. It should arrive in two or three days.',
         'Could you tell us at what time the problem happens?',
-        'We have reset your account. Please log in again and choose a new password.',
+        'We made a change on our side. Can you check if it works now?',
         'This is a known issue and our supplier is working on it. We will keep you updated.',
         'We fixed the problem. Please let us know if it happens again.',
         'We could not reproduce the problem. Could you add a screenshot to the ticket?',
+        'A colleague is on the way to check it now.',
+        'Thanks for your patience, we are almost done.',
     ];
 
     /**
