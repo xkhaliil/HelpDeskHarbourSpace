@@ -47,4 +47,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('categories', Admin\CategoryController::class);
 
     Route::resource('users', Admin\UserController::class)->only(['index', 'update']);
+    Route::patch('/users/{user}/approve', [Admin\UserController::class, 'approve'])->name('users.approve');
 });

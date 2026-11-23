@@ -6,6 +6,7 @@ use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -33,6 +34,7 @@ class DashboardController extends Controller
             ->get();
 
         return view('admin.dashboard', [
+            'pendingUsersCount' => User::whereNull('approved_at')->count(),
             'statuses' => TicketStatus::cases(),
             'countsPerStatus' => $countsPerStatus,
             'urgentTickets' => $urgentTickets,

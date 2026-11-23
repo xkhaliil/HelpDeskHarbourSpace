@@ -8,6 +8,15 @@
         Here is what is happening on the HelpDesk.
     </p>
 
+    @if ($pendingUsersCount > 0)
+        <div class="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-amber-300 bg-amber-50 p-4">
+            <p class="text-sm font-medium text-amber-900">
+                {{ $pendingUsersCount }} {{ Str::plural('account', $pendingUsersCount) }} waiting for your approval.
+            </p>
+            <x-button-link :href="route('admin.users.index')">Review accounts</x-button-link>
+        </div>
+    @endif
+
     <!-- Number of tickets per status -->
     <h2 class="mb-4 text-xl font-black uppercase tracking-tight">Tickets per status</h2>
 
