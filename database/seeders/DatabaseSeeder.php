@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // The three accounts for the demo. The password of every account is "password".
+        // The three accounts for the demo. They are already approved, so they can log in
+        // right away. The password of every account is "password".
         $admin = User::factory()->admin()->create([
             'name' => 'Admin',
             'email' => 'admin@admin.com',
@@ -38,6 +39,16 @@ class DatabaseSeeder extends Seeder
         User::factory(7)->student()->create();
         User::factory(3)->teacher()->create();
 
+        // Two people who registered with another address and still wait for an admin.
+        User::factory()->unapproved()->create([
+            'name' => 'Jordi Puig',
+            'email' => 'jordi.puig@gmail.com',
+        ]);
+        User::factory()->unapproved()->create([
+            'name' => 'Sofia Martín',
+            'email' => 'sofia.martin@harbour.space',
+        ]);
+
         // The categories of the HelpDesk.
         $categoryNames = [
             'Wi-Fi & Network',
@@ -50,9 +61,9 @@ class DatabaseSeeder extends Seeder
             Category::factory()->create(['name' => $name]);
         }
 
-        // 40 tickets reported by the students and teachers, spread over all statuses.
+        // 40 tickets reported by the approved students and teachers, spread over all statuses.
         // The TicketFactory picks a realistic problem and the category that fits it.
-        $reporters = User::where('role', '!=', Role::Admin)->get();
+        $reporters = User::where('role', '!=', Role::Admin)->whereNotNull('approved_at')->get();
 
         $tickets = Ticket::factory(40)
             ->recycle($reporters)

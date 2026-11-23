@@ -6,17 +6,28 @@ use App\Models\Category;
 use App\Models\Ticket;
 use App\Models\User;
 
-test('the seeder creates the three demo accounts', function () {
+test('the seeder creates the three approved demo accounts', function () {
     $this->seed();
 
-    expect(User::where('email', 'admin@admin.com')->first())
-        ->name->toBe('Admin')
-        ->role->toBe(Role::Admin)
-        ->and(User::where('email', 'teacher@harbour.space')->first()->role)->toBe(Role::Teacher)
-        ->and(User::where('email', 'student@harbour.space')->first()->role)->toBe(Role::Student);
+    $admin = User::where('email', 'admin@admin.com')->first();
+    $teacher = User::where('email', 'teacher@harbour.space')->first();
+    $student = User::where('email', 'student@harbour.space')->first();
+
+    expect($admin->name)->toBe('Admin')
+        ->and($admin->role)->toBe(Role::Admin)
+        ->and($teacher->role)->toBe(Role::Teacher)
+        ->and($student->role)->toBe(Role::Student)
+        ->and($admin->isApproved() && $teacher->isApproved() && $student->isApproved())->toBeTrue();
 
     $this->post('/login', ['email' => 'admin@admin.com', 'password' => 'password']);
-    $this->assertAuthenticated();
+    $this->assertAuthenticatedAs($admin);
+});
+
+test('the seeder creates two accounts that wait for approval', function () {
+    $this->seed();
+
+    expect(User::whereNull('approved_at')->pluck('email')->all())
+        ->toBe(['jordi.puig@gmail.com', 'sofia.martin@harbour.space']);
 });
 
 test('the seeder creates the categories, tickets and replies', function () {
@@ -30,8 +41,9 @@ test('the seeder creates the categories, tickets and replies', function () {
         'Building & Facilities',
     ]);
 
-    expect(User::count())->toBe(13)
+    expect(User::count())->toBe(15)
         ->and(Ticket::count())->toBe(40)
-        ->and(Ticket::distinct()->pluck('status')->sort()->values()->all())->toHaveCount(count(TicketStatus::cases()))
-        ->and(Ticket::whereHas('user', fn ($query) => $query->where('role', Role::Admin))->count())->toBe(0);
+        ->and(Ticket::distinct()->pluck('status')->all())->toHaveCount(count(TicketStatus::cases()))
+        ->and(Ticket::whereHas('user', fn ($query) => $query->where('role', Role::Admin))->count())->toBe(0)
+        ->and(Ticket::whereHas('user', fn ($query) => $query->whereNull('approved_at'))->count())->toBe(0);
 });

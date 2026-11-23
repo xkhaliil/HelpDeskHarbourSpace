@@ -30,8 +30,8 @@ class UserFactory extends Factory
 
         return [
             'name' => $firstName.' '.$lastName,
-            // A university address that matches the name, like "marta.vidal@harbour.space".
-            'email' => Str::slug($firstName.' '.$lastName, '.').'@harbour.space',
+            // A student address that matches the name, like "marta.vidal@student.harbour.space".
+            'email' => Str::slug($firstName.' '.$lastName, '.').'@'.config('helpdesk.student_email_domain'),
             'role' => Role::Student,
             'approved_at' => now(),
             'email_verified_at' => now(),
@@ -71,6 +71,7 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'role' => Role::Teacher,
+            'email' => Str::slug($attributes['name'], '.').'@'.config('helpdesk.teacher_email_domain'),
         ]);
     }
 
@@ -78,6 +79,7 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'role' => Role::Admin,
+            'email' => Str::slug($attributes['name'], '.').'@harbour.space',
         ]);
     }
 }

@@ -50,6 +50,8 @@ All seeded accounts use the password `password`.
 | Teacher | `teacher@harbour.space` |
 | Student | `student@harbour.space` |
 
+These three accounts are already approved. The seeder also creates two accounts that are still waiting for approval (`jordi.puig@gmail.com` and `sofia.martin@harbour.space`), so you can try the approval on the **Users** page of the admin panel.
+
 ## Tests
 
 ```bash
