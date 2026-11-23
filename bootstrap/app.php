@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => IsAdmin::class,
         ]);
+
+        // On Vercel every request passes through Vercel's proxy, which handles HTTPS.
+        // Trusting it makes Laravel generate https:// links for the CSS, JS and routes.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

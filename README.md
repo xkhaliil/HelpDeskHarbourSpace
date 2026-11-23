@@ -57,3 +57,39 @@ These three accounts are already approved. The seeder also creates two accounts 
 ```bash
 php artisan test
 ```
+
+## Deploy on Vercel
+
+Vercel runs the app as a Docker container. Everything it needs is in the repository:
+
+- `vercel.json`: tells Vercel to build the `Dockerfile` and send every request to it.
+- `Dockerfile`: PHP 8.5 with FrankenPHP. It installs the Composer packages (without the dev packages) and builds the CSS and JavaScript with Vite.
+- `Caddyfile`: the web server configuration (serves the `public` folder).
+
+Vercel does not keep files between requests, so the app needs an **external database**, and **screenshot uploads are turned off** on Vercel (`HELPDESK_SCREENSHOTS_ENABLED=false` in the `Dockerfile`).
+
+1. **Create a Postgres database**, for example Neon (free) from the Storage tab of your Vercel project, and copy its connection string (`postgresql://...`).
+
+2. **Create the tables and the demo data** from your own computer:
+
+    ```bash
+    DB_CONNECTION=pgsql DB_URL="postgresql://..." php artisan migrate --force --seed
+    ```
+
+    In PowerShell:
+
+    ```powershell
+    $env:DB_CONNECTION="pgsql"; $env:DB_URL="postgresql://..."; php artisan migrate --force --seed
+    ```
+
+3. **Import the GitHub repository in Vercel** and add these environment variables (Project Settings → Environment Variables):
+
+    | Variable  | Value                                                        |
+    |-----------|--------------------------------------------------------------|
+    | `APP_KEY` | the output of `php artisan key:generate --show`              |
+    | `APP_URL` | the address of the site, like `https://your-project.vercel.app` |
+    | `DB_URL`  | the Postgres connection string (not needed when Neon already added `DATABASE_URL`) |
+
+    Everything else has a production default in the `Dockerfile`: no debug mode, sessions and cache in the database, logs in the Vercel runtime logs. To use MySQL instead of Postgres, also set `DB_CONNECTION=mysql`.
+
+4. **Deploy.** Every push to the `main` branch deploys again. After changing an environment variable, redeploy.

@@ -22,8 +22,9 @@ class TicketController extends Controller
     {
         $query = Ticket::with(['user', 'category'])->latest();
 
+        // whereLike ignores upper and lower case on every database (SQLite, MySQL and Postgres).
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%'.$request->validated('search').'%');
+            $query->whereLike('title', '%'.$request->validated('search').'%');
         }
 
         if ($request->filled('status')) {

@@ -43,7 +43,10 @@
                     <h3 class="mt-4 text-lg font-black uppercase tracking-tight">Create a ticket</h3>
                     <p class="mt-2 text-gray-600">
                         Describe the problem, choose a category and tell us where it happens.
-                        You can add a screenshot. Teachers can also set the priority.
+                        @if (config('helpdesk.screenshots_enabled'))
+                            You can add a screenshot.
+                        @endif
+                        Teachers can also set the priority.
                     </p>
                 </li>
                 <li class="rounded-xl border border-gray-200 p-6">
