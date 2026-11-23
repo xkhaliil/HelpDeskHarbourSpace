@@ -13,7 +13,7 @@
             <!-- Email Address -->
             <div class="mt-4">
                 <x-breeze.input-label for="email" value="Email" />
-                <x-breeze.text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="name@{{ config('helpdesk.student_email_domain') }}" />
+                <x-breeze.text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" :placeholder="'name@'.config('helpdesk.student_email_domain')" />
                 <p class="mt-1 text-xs text-gray-500">
                     With your &#64;{{ config('helpdesk.student_email_domain') }} or &#64;{{ config('helpdesk.teacher_email_domain') }}
                     address you can start right away. Other addresses are approved by an administrator first.

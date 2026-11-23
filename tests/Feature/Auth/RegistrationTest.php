@@ -6,7 +6,8 @@ use App\Models\User;
 test('registration screen can be rendered', function () {
     $response = $this->get('/register');
 
-    $response->assertStatus(200);
+    $response->assertStatus(200)
+        ->assertSee('placeholder="name@student.harbour.space"', escape: false);
 });
 
 test('a university address gets its role and can start right away', function (string $email, Role $role) {
