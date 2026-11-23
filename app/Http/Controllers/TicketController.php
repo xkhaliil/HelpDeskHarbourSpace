@@ -64,7 +64,8 @@ class TicketController extends Controller
             $data['priority'] = TicketPriority::Normal->value;
         }
 
-        if ($request->hasFile('screenshot')) {
+        // Screenshots can be turned off in config/helpdesk.php (for example on Vercel).
+        if (config('helpdesk.screenshots_enabled') && $request->hasFile('screenshot')) {
             // Saved in storage/app/public/screenshots, visible after "php artisan storage:link".
             $data['screenshot'] = $request->file('screenshot')->store('screenshots', 'public');
         }
@@ -125,7 +126,7 @@ class TicketController extends Controller
             $data['priority'] = $request->validated('priority');
         }
 
-        if ($request->hasFile('screenshot')) {
+        if (config('helpdesk.screenshots_enabled') && $request->hasFile('screenshot')) {
             // A new image replaces the old one.
             $ticket->deleteScreenshot();
             $data['screenshot'] = $request->file('screenshot')->store('screenshots', 'public');

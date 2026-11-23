@@ -16,6 +16,8 @@
 
 <x-form-textarea name="description" label="Description" rows="6" placeholder="What happened? When did it start? What did you already try?" :value="$ticket?->description" required />
 
+{{-- The upload can be turned off in config/helpdesk.php (for example on Vercel). --}}
+@if (config('helpdesk.screenshots_enabled'))
 <div class="space-y-1">
     <label for="screenshot" class="block text-sm font-semibold text-ink">
         Screenshot <span class="font-normal text-gray-500">(optional, an image of max. 2 MB)</span>
@@ -31,3 +33,4 @@
         <p class="text-xs text-gray-500">This ticket already has a screenshot. A new image replaces it.</p>
     @endif
 </div>
+@endif

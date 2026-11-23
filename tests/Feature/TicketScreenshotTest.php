@@ -70,6 +70,26 @@ test('deleting a ticket removes its screenshot', function () {
     Storage::disk('public')->assertMissing($file);
 });
 
+test('screenshots can be turned off in the config', function () {
+    config(['helpdesk.screenshots_enabled' => false]);
+    $student = User::factory()->student()->create();
+
+    $this->actingAs($student)
+        ->get('/tickets/create')
+        ->assertDontSee('name="screenshot"', escape: false);
+
+    $this->actingAs($student)->post('/tickets', [
+        'title' => 'Projector does not turn on',
+        'category_id' => Category::factory()->create()->id,
+        'location' => 'Room 2.03',
+        'description' => 'The light on the projector stays red.',
+        'screenshot' => UploadedFile::fake()->image('projector.png'),
+    ])->assertSessionHasNoErrors();
+
+    expect(Ticket::firstOrFail()->screenshot)->toBeNull();
+    expect(Storage::disk('public')->allFiles())->toBeEmpty();
+});
+
 test('the ticket page still works when the screenshot file is missing', function () {
     $ticket = Ticket::factory()->create(['screenshot' => 'screenshots/missing.png']);
 
