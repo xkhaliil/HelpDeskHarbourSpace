@@ -4,15 +4,101 @@ A Laravel web application where the students and teachers of Harbour.Space Unive
 
 ## What the app does
 
-Every problem is a **ticket**. A ticket has a title, a category, a location, a description, a priority (normal, high, urgent) and a status (open, in progress, solved, closed).
+Every problem is a **ticket**. A ticket has a title, a category, a location, a description, an optional screenshot, a priority (normal, high, urgent) and a status (open, in progress, solved, closed).
 
-- **Students** create tickets, follow their status and reply to the IT staff. They can edit or delete a ticket while it is still open, and close it once it is solved.
+- **Visitors** (not logged in) see the welcome page and the public category pages: what each category is for and how many tickets it has per status.
+- **Students** create tickets, follow their status and talk with the IT staff in the conversation of the ticket. They can edit or delete a ticket while it is still open, and close it once it is solved. They can also edit or delete their own replies, as long as the ticket is not closed.
 - **Teachers** can do the same, and they also choose the priority of their tickets.
 - **Administrators** (the IT and campus staff) work in the admin panel:
-    - a dashboard with the number of tickets per status and the urgent and high priority tickets,
-    - a list of all tickets with a search and filters, where they change the status and the priority and reply to the user,
-    - the categories (create, edit, delete),
-    - the users (change the role and approve new accounts).
+    - a dashboard with the number of tickets per status, the tickets they handle and the urgent and high priority tickets,
+    - a list of all tickets with a search and filters, where they change the status and the priority, choose which admins handle the ticket and reply to the user,
+    - the categories (create, view, edit, delete),
+    - the users (create, view, edit, delete, and approve new accounts).
+- When an admin replies to a ticket, the owner gets an **email** with the ticket, the reply and a link. On your computer the email is written to `storage/logs/laravel.log` instead of being sent.
+
+## Screenshots
+
+| Welcome page | Public categories |
+|---|---|
+| ![The welcome page](docs/screenshots/home.png) | ![The public category list](docs/screenshots/categories.png) |
+| **Dashboard of a teacher** | **A ticket with its conversation** |
+| ![The dashboard of a teacher](docs/screenshots/dashboard.png) | ![A ticket with its conversation](docs/screenshots/ticket.png) |
+| **Reporting a problem** | **Admin dashboard** |
+| ![The form to report a problem](docs/screenshots/new-ticket.png) | ![The admin dashboard](docs/screenshots/admin-dashboard.png) |
+| **Admin: handling a ticket** | **Admin: users** |
+| ![An admin handling a ticket](docs/screenshots/admin-ticket.png) | ![The users page of the admin panel](docs/screenshots/admin-users.png) |
+
+## Models and relationships
+
+```mermaid
+classDiagram
+    direction LR
+    class User {
+        +int id
+        +string name
+        +string email
+        +string password
+        +Role role
+        +datetime approved_at
+    }
+    class Category {
+        +int id
+        +string name
+        +text description
+    }
+    class Ticket {
+        +int id
+        +int user_id
+        +int category_id
+        +string title
+        +text description
+        +string location
+        +TicketPriority priority
+        +TicketStatus status
+        +string screenshot
+    }
+    class Reply {
+        +int id
+        +int ticket_id
+        +int user_id
+        +text message
+    }
+    User "1" --> "*" Ticket : reports
+    Category "1" --> "*" Ticket : groups
+    Ticket "1" --> "*" Reply : has
+    User "1" --> "*" Reply : writes
+    User "*" <--> "*" Ticket : handles
+```
+
+| Relationship | Type | In the code |
+|---|---|---|
+| A user reports many tickets | one-to-many | `User::tickets()` and `Ticket::user()` |
+| A category groups many tickets | one-to-many | `Category::tickets()` and `Ticket::category()` |
+| A ticket has many replies | one-to-many | `Ticket::replies()` and `Reply::ticket()` |
+| A user writes many replies | one-to-many | `User::replies()` and `Reply::user()` |
+| Admins handle tickets: a ticket can have several admins, an admin handles many tickets | many-to-many (pivot table `ticket_user`) | `Ticket::assignees()` and `User::assignedTickets()` |
+
+The roles, priorities and statuses are PHP enums in `app/Enums` (`Role`, `TicketPriority`, `TicketStatus`).
+
+## How the code is organised
+
+| What | Where |
+|---|---|
+| Routes (public, logged-in users, admin panel) | `routes/web.php` |
+| Pages for visitors, students and teachers | `app/Http/Controllers` (`HomeController`, `CategoryController`, `TicketController`, `ReplyController`, ...) |
+| Admin panel | `app/Http/Controllers/Admin` |
+| Validation of every form | `app/Http/Requests` |
+| Who may do what | `app/Policies` (`TicketPolicy`, `ReplyPolicy`) and the `admin` middleware (`app/Http/Middleware/IsAdmin.php`) |
+| The email to the ticket owner | `app/Notifications/TicketReplied.php` |
+| The menu, defined once for the header and the footer | `app/View/Components/AppLayout.php` |
+| Master template, header and footer | `resources/views/layouts/app.blade.php`, `resources/views/components/header.blade.php` and `footer.blade.php` |
+| Tables, demo data and factories | `database/migrations`, `database/seeders/DatabaseSeeder.php`, `database/factories` |
+
+A few extra things:
+
+- **Caching:** the welcome page keeps the list of categories in the cache for one hour (`HomeController`). The cache is cleared when an admin creates, changes or deletes a category.
+- **No N+1 queries:** every list loads its relationships up front with `with()`, and only the columns it needs (for example `with('user:id,name')`). On your computer Laravel throws an error when a page would still cause an N+1 query (`Model::preventLazyLoading()` in `app/Providers/AppServiceProvider.php`).
+- **Screenshots** of a ticket are checked (image, max. 2 MB), saved with a generated name in `storage/app/public/screenshots`, and deleted together with the ticket.
 
 The email address decides what happens when somebody registers:
 
@@ -75,13 +161,17 @@ If you use Laravel Herd, you can skip `php artisan serve`: put the project in yo
 
 All seeded accounts use the password `password`.
 
-| Role    | Email                   |
-|---------|-------------------------|
+| Role    | Email                     |
+|---------|---------------------------|
 | Admin   | `admin@example.com`       |
-| Teacher | `teacher@harbour.space` |
-| Student | `student@harbour.space` |
+| Teacher | `teacher@harbour.space`   |
+| Student | `student@harbour.space`   |
 
-These three accounts are already approved. The seeder also creates two accounts that are still waiting for approval (`jordi.puig@gmail.com` and `sofia.martin@harbour.space`), so you can try the approval on the **Users** page of the admin panel. It also creates 5 categories and 40 tickets with replies.
+These three accounts are already approved. The seeder also creates:
+
+- two more admins of the IT staff (`marc.soler@example.com` and `laia.ferrer@example.com`), who handle tickets together with `admin@example.com`,
+- two accounts that are still waiting for approval (`jordi.puig@gmail.com` and `sofia.martin@harbour.space`), so you can try the approval on the **Users** page of the admin panel,
+- 10 more students and teachers, 5 categories with a description, and 40 tickets with replies. Every ticket that is not open is handled by 1 or 2 admins.
 
 ### Tests
 
@@ -235,7 +325,7 @@ The `Dockerfile` sets the other production settings, so you do not add them in V
 ### Later updates
 
 - Every push to the `main` branch deploys again automatically.
-- When you add a new migration, run `php artisan migrate` on your computer as usual, then run the command from step 4 again **without `--seed`**, so the production database gets the new tables too. Running `--seed` again would add a second copy of the demo data.
+- When you add a new migration, run `php artisan migrate` on your computer as usual, then run the command from step 4 again **without `--seed`**, so the production database gets the new tables too. Running `--seed` again would add a second copy of the demo data. If the production database only has demo data, you can also start it over with `php artisan migrate:fresh --force --seed` (this deletes everything in it).
 - After you add or change an environment variable in Vercel, redeploy.
 
 ## Troubleshooting: 500 Server Error
