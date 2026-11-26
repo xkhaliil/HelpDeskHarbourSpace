@@ -72,8 +72,8 @@
         </div>
     </section>
 
-    <!-- What can be reported -->
-    @if ($categories->isNotEmpty())
+    <!-- What can be reported. $categories is a plain array from the cache (see HomeController). -->
+    @if (count($categories) > 0)
         <section class="border-t border-gray-200 bg-gray-50">
             <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
                 <h2 class="text-3xl font-black uppercase tracking-tight sm:text-4xl">What can you report?</h2>
@@ -81,9 +81,9 @@
                 <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($categories as $category)
                         <li>
-                            <a href="{{ route('categories.show', $category) }}" class="block h-full rounded-xl border-l-4 border-harbour bg-white p-5 shadow-sm transition hover:shadow-md">
-                                <span class="font-bold">{{ $category->name }}</span>
-                                <span class="mt-1 block text-sm text-gray-600">{{ $category->description }}</span>
+                            <a href="{{ route('categories.show', $category['id']) }}" class="block h-full rounded-xl border-l-4 border-harbour bg-white p-5 shadow-sm transition hover:shadow-md">
+                                <span class="font-bold">{{ $category['name'] }}</span>
+                                <span class="mt-1 block text-sm text-gray-600">{{ $category['description'] }}</span>
                             </a>
                         </li>
                     @endforeach
