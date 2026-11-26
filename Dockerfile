@@ -47,8 +47,7 @@ ENV PORT=80 \
     SESSION_DRIVER=database \
     SESSION_SECURE_COOKIE=true \
     CACHE_STORE=database \
-    QUEUE_CONNECTION=sync \
-    HELPDESK_SCREENSHOTS_ENABLED=false
+    QUEUE_CONNECTION=sync
 
 USER www-data
 

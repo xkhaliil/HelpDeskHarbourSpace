@@ -77,21 +77,26 @@ class DatabaseSeeder extends Seeder
 
         // 0 to 5 replies per ticket. The admin answers first, then the owner and the admin take turns.
         foreach ($tickets as $ticket) {
-            $replyTimes = collect(range(1, fake()->numberBetween(0, 5)))
-                ->map(fn () => fake()->dateTimeBetween($ticket->created_at, 'now'))
-                ->sort()
-                ->values();
+            $replyCount = fake()->numberBetween(0, 5);
+            $writtenAt = $ticket->created_at;
 
-            foreach ($replyTimes as $index => $writtenAt) {
-                $writtenByAdmin = $index % 2 === 0;
+            for ($number = 1; $number <= $replyCount; $number++) {
+                // Each reply is written after the one before it, and never in the future.
+                $writtenAt = fake()->dateTimeBetween($writtenAt);
 
-                $factory = $writtenByAdmin ? Reply::factory()->fromStaff() : Reply::factory();
-
-                $factory->for($ticket)->create([
-                    'user_id' => $writtenByAdmin ? $admin->id : $ticket->user_id,
-                    'created_at' => $writtenAt,
-                    'updated_at' => $writtenAt,
-                ]);
+                if ($number % 2 === 1) {
+                    Reply::factory()->fromStaff()->for($ticket)->create([
+                        'user_id' => $admin->id,
+                        'created_at' => $writtenAt,
+                        'updated_at' => $writtenAt,
+                    ]);
+                } else {
+                    Reply::factory()->for($ticket)->create([
+                        'user_id' => $ticket->user_id,
+                        'created_at' => $writtenAt,
+                        'updated_at' => $writtenAt,
+                    ]);
+                }
             }
         }
     }

@@ -23,14 +23,11 @@ cp .env.example .env
 php artisan key:generate
 
 php artisan migrate:fresh --seed
-php artisan storage:link
 
 php artisan serve
 ```
 
 Then open http://127.0.0.1:8000.
-
-`php artisan storage:link` makes the uploaded ticket screenshots (saved in `storage/app/public/screenshots`) visible in the browser. The app also works without screenshots.
 
 The email address decides what happens when somebody registers:
 
@@ -66,7 +63,7 @@ Vercel runs the app as a Docker container. Everything it needs is in the reposit
 - `Dockerfile`: PHP 8.5 with FrankenPHP. It installs the Composer packages (without the dev packages) and builds the CSS and JavaScript with Vite.
 - `Caddyfile`: the web server configuration (serves the `public` folder).
 
-Vercel does not keep files between requests, so the app needs an **external database**, and **screenshot uploads are turned off** on Vercel (`HELPDESK_SCREENSHOTS_ENABLED=false` in the `Dockerfile`).
+Vercel does not keep files between requests, so the app needs an **external database**.
 
 1. **Create a Postgres database**, for example Neon (free) from the Storage tab of your Vercel project, and copy its connection string (`postgresql://...`).
 

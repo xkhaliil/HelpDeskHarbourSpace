@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Storage;
 
 class Ticket extends Model
 {
@@ -29,7 +28,6 @@ class Ticket extends Model
         'location',
         'priority',
         'status',
-        'screenshot',
     ];
 
     /**
@@ -71,27 +69,5 @@ class Ticket extends Model
     public function replies(): HasMany
     {
         return $this->hasMany(Reply::class)->oldest();
-    }
-
-    /**
-     * The URL of the uploaded screenshot, or null when there is no (existing) image.
-     */
-    public function screenshotUrl(): ?string
-    {
-        if ($this->screenshot === null || ! Storage::disk('public')->exists($this->screenshot)) {
-            return null;
-        }
-
-        return asset('storage/'.$this->screenshot);
-    }
-
-    /**
-     * Remove the uploaded screenshot file from the public disk.
-     */
-    public function deleteScreenshot(): void
-    {
-        if ($this->screenshot !== null) {
-            Storage::disk('public')->delete($this->screenshot);
-        }
     }
 }

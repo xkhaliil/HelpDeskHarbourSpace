@@ -54,7 +54,7 @@ class TicketController extends Controller
      */
     public function store(StoreTicketRequest $request): RedirectResponse
     {
-        $data = $request->safe()->except(['screenshot', 'priority']);
+        $data = $request->validated();
 
         // Only teachers may choose a priority. For students it is always "normal",
         // even when somebody adds a priority field to the request by hand.
@@ -62,12 +62,6 @@ class TicketController extends Controller
             $data['priority'] = $request->validated('priority') ?? TicketPriority::Normal->value;
         } else {
             $data['priority'] = TicketPriority::Normal->value;
-        }
-
-        // Screenshots can be turned off in config/helpdesk.php (for example on Vercel).
-        if (config('helpdesk.screenshots_enabled') && $request->hasFile('screenshot')) {
-            // Saved in storage/app/public/screenshots, visible after "php artisan storage:link".
-            $data['screenshot'] = $request->file('screenshot')->store('screenshots', 'public');
         }
 
         $ticket = $request->user()->tickets()->create($data);
@@ -119,17 +113,11 @@ class TicketController extends Controller
     {
         Gate::authorize('update', $ticket);
 
-        $data = $request->safe()->except(['screenshot', 'priority']);
+        $data = $request->safe()->except(['priority']);
 
         // Teachers may change the priority. For students it stays what it was.
         if ($request->user()->isTeacher() && $request->filled('priority')) {
             $data['priority'] = $request->validated('priority');
-        }
-
-        if (config('helpdesk.screenshots_enabled') && $request->hasFile('screenshot')) {
-            // A new image replaces the old one.
-            $ticket->deleteScreenshot();
-            $data['screenshot'] = $request->file('screenshot')->store('screenshots', 'public');
         }
 
         $ticket->update($data);
@@ -158,7 +146,6 @@ class TicketController extends Controller
     {
         Gate::authorize('delete', $ticket);
 
-        $ticket->deleteScreenshot();
         $ticket->delete();
 
         return redirect()->route('tickets.index')

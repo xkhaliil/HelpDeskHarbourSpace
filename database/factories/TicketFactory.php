@@ -108,7 +108,6 @@ class TicketFactory extends Factory
                 TicketPriority::Urgent,
             ]),
             'status' => fake()->randomElement(TicketStatus::cases()),
-            'screenshot' => null,
             'created_at' => $createdAt,
             'updated_at' => $createdAt,
         ];

@@ -41,7 +41,7 @@ class ReplyFactory extends Factory
         'We made a change on our side. Can you check if it works now?',
         'This is a known issue and our supplier is working on it. We will keep you updated.',
         'We fixed the problem. Please let us know if it happens again.',
-        'We could not reproduce the problem. Could you add a screenshot to the ticket?',
+        'We could not reproduce the problem. Could you add more details to the ticket?',
         'A colleague is on the way to check it now.',
         'Thanks for your patience, we are almost done.',
     ];

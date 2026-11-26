@@ -18,17 +18,4 @@ return [
 
     'teacher_email_domain' => env('HELPDESK_TEACHER_EMAIL_DOMAIN', 'teacher.harbour.space'),
 
-    /*
-    |--------------------------------------------------------------------------
-    | Screenshots
-    |--------------------------------------------------------------------------
-    |
-    | Ticket screenshots are saved on the "public" disk of the server. Some
-    | hosting (like Vercel) does not keep those files, so there the upload
-    | is turned off with HELPDESK_SCREENSHOTS_ENABLED=false.
-    |
-    */
-
-    'screenshots_enabled' => env('HELPDESK_SCREENSHOTS_ENABLED', true),
-
 ];

@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('location');
             $table->string('priority')->default('normal');
             $table->string('status')->default('open');
-            $table->string('screenshot')->nullable();
             $table->timestamps();
         });
     }

@@ -52,9 +52,6 @@ class ProfileController extends Controller
 
         // The foreign keys do not allow deleting a user who still has tickets or replies,
         // so those are removed first (the replies on the user's tickets go with the tickets).
-        foreach ($user->tickets as $ticket) {
-            $ticket->deleteScreenshot();
-        }
         $user->tickets()->delete();
         $user->replies()->delete();
 

@@ -41,9 +41,7 @@ class TicketController extends Controller
 
         // The role of the person who created the ticket lives in the users table.
         if ($request->filled('role')) {
-            $query->whereHas('user', function ($userQuery) use ($request) {
-                $userQuery->where('role', $request->validated('role'));
-            });
+            $query->whereRelation('user', 'role', $request->validated('role'));
         }
 
         return view('admin.tickets.index', [
