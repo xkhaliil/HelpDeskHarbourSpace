@@ -37,6 +37,13 @@ class DatabaseSeeder extends Seeder
             'email' => 'student@harbour.space',
         ]);
 
+        // Two more members of the IT staff, so a ticket can be handled by several admins.
+        $itStaff = collect([
+            $admin,
+            User::factory()->admin()->create(['name' => 'Marc Soler', 'email' => 'marc.soler@example.com']),
+            User::factory()->admin()->create(['name' => 'Laia Ferrer', 'email' => 'laia.ferrer@example.com']),
+        ]);
+
         // About 10 extra students and teachers.
         User::factory(7)->student()->create();
         User::factory(3)->teacher()->create();
@@ -79,6 +86,14 @@ class DatabaseSeeder extends Seeder
                 ['status' => TicketStatus::Closed],
             )
             ->create();
+
+        // The tickets that are being handled or are done get 1 or 2 admins of the IT staff
+        // (saved in the "ticket_user" pivot table). Nobody has picked up the open tickets yet.
+        foreach ($tickets as $ticket) {
+            if ($ticket->status !== TicketStatus::Open) {
+                $ticket->assignees()->attach($itStaff->random(fake()->numberBetween(1, 2)));
+            }
+        }
 
         // 0 to 5 replies per ticket. The admin answers first, then the owner and the admin take turns.
         foreach ($tickets as $ticket) {

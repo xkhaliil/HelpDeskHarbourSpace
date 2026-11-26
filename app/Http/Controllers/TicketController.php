@@ -88,7 +88,7 @@ class TicketController extends Controller
 
         Gate::authorize('view', $ticket);
 
-        $ticket->load(['category', 'replies.user']);
+        $ticket->load(['category', 'replies.user', 'assignees']);
 
         return view('tickets.show', compact('ticket'));
     }
@@ -159,6 +159,10 @@ class TicketController extends Controller
         Gate::authorize('delete', $ticket);
 
         $ticket->deleteScreenshot();
+
+        // The foreign keys of the pivot table do not allow deleting a ticket that is
+        // still linked to admins, so those links are removed first.
+        $ticket->assignees()->detach();
         $ticket->delete();
 
         return redirect()->route('tickets.index')

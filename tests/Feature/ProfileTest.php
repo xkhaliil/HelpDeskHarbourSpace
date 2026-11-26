@@ -100,3 +100,17 @@ test('correct password must be provided to delete account', function () {
 
     expect($user->fresh())->not->toBeNull();
 });
+
+test('an admin who handles tickets can delete their account', function () {
+    $admin = User::factory()->admin()->create();
+    $ticket = Ticket::factory()->inProgress()->create();
+    $ticket->assignees()->attach($admin);
+
+    $this->actingAs($admin)
+        ->delete('/profile', ['password' => 'password'])
+        ->assertSessionHasNoErrors()
+        ->assertRedirect('/');
+
+    expect($admin->fresh())->toBeNull()
+        ->and($ticket->assignees()->count())->toBe(0);
+});

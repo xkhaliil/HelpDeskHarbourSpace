@@ -203,3 +203,25 @@ test('owners cannot edit or delete a ticket that is no longer open', function (s
 
     $this->assertModelExists($ticket);
 })->with(['inProgress', 'solved', 'closed']);
+
+test('owners can see which admins handle their ticket', function () {
+    $ticket = Ticket::factory()->inProgress()->create();
+    $ticket->assignees()->attach(User::factory()->admin()->create(['name' => 'Marc Soler']));
+
+    $this->actingAs($ticket->user)
+        ->get("/tickets/{$ticket->id}")
+        ->assertOk()
+        ->assertSeeInOrder(['Handled by', 'Marc Soler']);
+});
+
+test('owners can delete an open ticket that admins already handle', function () {
+    $ticket = Ticket::factory()->open()->create();
+    $ticket->assignees()->attach(User::factory()->admin()->create());
+
+    $this->actingAs($ticket->user)
+        ->delete("/tickets/{$ticket->id}")
+        ->assertRedirect('/tickets');
+
+    $this->assertModelMissing($ticket);
+    $this->assertDatabaseCount('ticket_user', 0);
+});

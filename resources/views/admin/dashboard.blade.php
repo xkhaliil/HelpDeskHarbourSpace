@@ -31,6 +31,14 @@
         @endforeach
     </div>
 
+    <!-- The unsolved tickets that this admin handles -->
+    <x-card class="mt-10">
+        <h2 class="text-xl font-black uppercase tracking-tight">Tickets you handle</h2>
+        <div class="mt-2">
+            @include('admin.partials.ticket-list', ['tickets' => $assignedTickets, 'emptyText' => 'No open tickets are assigned to you.'])
+        </div>
+    </x-card>
+
     <!-- Latest important tickets -->
     <div class="mt-10 grid gap-6 lg:grid-cols-2">
         <x-card>

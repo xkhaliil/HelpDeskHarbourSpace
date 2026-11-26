@@ -10,6 +10,7 @@ use App\Http\Requests\AdminFilterTicketsRequest;
 use App\Http\Requests\AdminUpdateTicketRequest;
 use App\Models\Category;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -59,21 +60,28 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket): View
     {
-        $ticket->load(['user', 'category', 'replies.user']);
+        $ticket->load(['user', 'category', 'replies.user', 'assignees']);
 
         return view('admin.tickets.show', [
             'ticket' => $ticket,
             'statuses' => TicketStatus::cases(),
             'priorities' => TicketPriority::cases(),
+            // All admins, for the "Handled by" checkboxes.
+            'admins' => User::where('role', Role::Admin)->orderBy('name')->get(),
         ]);
     }
 
     /**
-     * Change the status and the priority of a ticket.
+     * Change the status, the priority and the admins who handle a ticket.
      */
     public function update(AdminUpdateTicketRequest $request, Ticket $ticket): RedirectResponse
     {
-        $ticket->update($request->validated());
+        $ticket->update($request->safe()->only(['status', 'priority']));
+
+        // sync() saves exactly the checked admins in the pivot table:
+        // new ones are added, admins who are no longer checked are removed.
+        // When no checkbox is checked, the form sends nothing, so the list is empty.
+        $ticket->assignees()->sync($request->validated('assignees', []));
 
         return redirect()->route('admin.tickets.show', $ticket)
             ->with('success', 'The ticket has been updated.');

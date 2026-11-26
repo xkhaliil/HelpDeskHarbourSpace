@@ -41,9 +41,18 @@ test('the seeder creates the categories, tickets and replies', function () {
         'Building & Facilities',
     ]);
 
-    expect(User::count())->toBe(15)
+    expect(User::count())->toBe(17)
         ->and(Ticket::count())->toBe(40)
         ->and(Ticket::distinct()->pluck('status')->all())->toHaveCount(count(TicketStatus::cases()))
         ->and(Ticket::whereHas('user', fn ($query) => $query->where('role', Role::Admin))->count())->toBe(0)
         ->and(Ticket::whereHas('user', fn ($query) => $query->whereNull('approved_at'))->count())->toBe(0);
+});
+
+test('the seeder lets the IT staff handle every ticket that is not open', function () {
+    $this->seed();
+
+    expect(User::where('role', Role::Admin)->count())->toBe(3)
+        ->and(Ticket::where('status', TicketStatus::Open)->has('assignees')->count())->toBe(0)
+        ->and(Ticket::where('status', '!=', TicketStatus::Open)->doesntHave('assignees')->count())->toBe(0)
+        ->and(User::where('role', '!=', Role::Admin)->has('assignedTickets')->count())->toBe(0);
 });

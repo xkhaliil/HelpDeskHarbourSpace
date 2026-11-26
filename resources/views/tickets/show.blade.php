@@ -56,6 +56,10 @@
                         <dd class="mt-1"><x-badge :value="$ticket->priority" /></dd>
                     </div>
                     <div>
+                        <dt class="text-xs font-bold uppercase tracking-widest text-gray-500">Handled by</dt>
+                        <dd class="mt-1">{{ $ticket->assignees->pluck('name')->join(', ') ?: 'Nobody yet' }}</dd>
+                    </div>
+                    <div>
                         <dt class="text-xs font-bold uppercase tracking-widest text-gray-500">Category</dt>
                         <dd class="mt-1">{{ $ticket->category->name }}</dd>
                     </div>

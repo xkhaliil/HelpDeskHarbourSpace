@@ -52,11 +52,14 @@ class ProfileController extends Controller
 
         // The foreign keys do not allow deleting a user who still has tickets or replies,
         // so those are removed first (the replies on the user's tickets go with the tickets).
+        // The links in the "ticket_user" pivot table are removed the same way.
         foreach ($user->tickets as $ticket) {
             $ticket->deleteScreenshot();
+            $ticket->assignees()->detach();
         }
         $user->tickets()->delete();
         $user->replies()->delete();
+        $user->assignedTickets()->detach();
 
         $user->delete();
 

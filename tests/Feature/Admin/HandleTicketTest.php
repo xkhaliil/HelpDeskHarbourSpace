@@ -61,3 +61,56 @@ test('students cannot use the admin ticket page', function () {
 
     expect($ticket->refresh()->status)->toBe(TicketStatus::Open);
 });
+
+test('admins can choose which admins handle a ticket', function () {
+    $ticket = Ticket::factory()->open()->create();
+    $admin = User::factory()->admin()->create();
+    $colleague = User::factory()->admin()->create();
+
+    $this->actingAs($admin)
+        ->put("/admin/tickets/{$ticket->id}", [
+            'status' => 'in_progress',
+            'priority' => 'normal',
+            'assignees' => [$admin->id, $colleague->id],
+        ])
+        ->assertSessionHasNoErrors();
+
+    expect($ticket->assignees()->pluck('users.id')->sort()->values()->all())->toBe([$admin->id, $colleague->id]);
+});
+
+test('unchecking every admin removes the admins from the ticket', function () {
+    $ticket = Ticket::factory()->inProgress()->create();
+    $admin = User::factory()->admin()->create();
+    $ticket->assignees()->attach($admin);
+
+    $this->actingAs($admin)
+        ->put("/admin/tickets/{$ticket->id}", ['status' => 'in_progress', 'priority' => 'normal'])
+        ->assertSessionHasNoErrors();
+
+    expect($ticket->assignees()->count())->toBe(0);
+});
+
+test('only admins can handle a ticket', function () {
+    $ticket = Ticket::factory()->open()->create();
+    $student = User::factory()->student()->create();
+
+    $this->actingAs(User::factory()->admin()->create())
+        ->put("/admin/tickets/{$ticket->id}", [
+            'status' => 'in_progress',
+            'priority' => 'normal',
+            'assignees' => [$student->id],
+        ])
+        ->assertSessionHasErrors(['assignees.0' => 'Only members of the IT staff (admins) can handle a ticket.']);
+
+    expect($ticket->assignees()->count())->toBe(0);
+});
+
+test('the admin ticket page shows who handles the ticket', function () {
+    $ticket = Ticket::factory()->inProgress()->create();
+    $ticket->assignees()->attach(User::factory()->admin()->create(['name' => 'Marc Soler']));
+
+    $this->actingAs(User::factory()->admin()->create())
+        ->get("/admin/tickets/{$ticket->id}")
+        ->assertOk()
+        ->assertSeeInOrder(['Handled by', 'Marc Soler']);
+});

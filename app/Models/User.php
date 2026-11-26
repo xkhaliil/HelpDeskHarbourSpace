@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Enums\Role;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -79,6 +80,17 @@ class User extends Authenticatable
     public function replies(): HasMany
     {
         return $this->hasMany(Reply::class);
+    }
+
+    /**
+     * The tickets this admin handles (the other side of Ticket::assignees()).
+     * Many-to-many: the links are saved in the "ticket_user" pivot table.
+     *
+     * @return BelongsToMany<Ticket, $this>
+     */
+    public function assignedTickets(): BelongsToMany
+    {
+        return $this->belongsToMany(Ticket::class);
     }
 
     public function isAdmin(): bool

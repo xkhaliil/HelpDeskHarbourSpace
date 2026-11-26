@@ -37,6 +37,24 @@
                     <x-form-select name="priority" label="Priority" :value="$ticket->priority->value" required
                                    :options="collect($priorities)->map(fn ($priority) => ['key' => $priority->value, 'value' => $priority->label()])" />
 
+                    {{-- One checkbox per admin. The checked ids are sent as the array "assignees[]". --}}
+                    <fieldset class="space-y-2">
+                        <legend class="block text-sm font-semibold text-ink">Handled by</legend>
+
+                        @foreach ($admins as $admin)
+                            <label class="flex items-center gap-2 text-sm">
+                                <input type="checkbox" name="assignees[]" value="{{ $admin->id }}"
+                                       class="rounded border-gray-300 text-harbour focus:ring-harbour"
+                                       @checked(in_array($admin->id, old('assignees', $ticket->assignees->pluck('id')->all())))>
+                                {{ $admin->name }}
+                            </label>
+                        @endforeach
+
+                        @error('assignees.*')
+                            <p class="text-sm font-medium text-red-600">{{ $message }}</p>
+                        @enderror
+                    </fieldset>
+
                     <x-breeze.primary-button>Save</x-breeze.primary-button>
                 </form>
             </x-card>
@@ -57,6 +75,10 @@
                             {{ $ticket->user->name }} <x-badge :value="$ticket->user->role" />
                             <div class="text-gray-600">{{ $ticket->user->email }}</div>
                         </dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-bold uppercase tracking-widest text-gray-500">Handled by</dt>
+                        <dd class="mt-1">{{ $ticket->assignees->pluck('name')->join(', ') ?: 'Nobody yet' }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs font-bold uppercase tracking-widest text-gray-500">Category</dt>
