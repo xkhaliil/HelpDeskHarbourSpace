@@ -32,6 +32,15 @@
                 <p class="mt-3 whitespace-pre-line">{{ $ticket->description }}</p>
             </x-card>
 
+            @if ($ticket->screenshotUrl())
+                <x-card>
+                    <h2 class="text-sm font-black uppercase tracking-widest text-gray-500">Screenshot</h2>
+                    <a href="{{ $ticket->screenshotUrl() }}" target="_blank" class="mt-3 block">
+                        <img src="{{ $ticket->screenshotUrl() }}" alt="Screenshot of the problem" class="max-h-96 rounded-md border border-gray-200">
+                    </a>
+                </x-card>
+            @endif
+
             @include('tickets.partials.conversation')
         </div>
 

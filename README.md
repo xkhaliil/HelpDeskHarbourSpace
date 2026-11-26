@@ -53,6 +53,7 @@ cp .env.example .env
 php artisan key:generate
 
 php artisan migrate:fresh --seed
+php artisan storage:link
 
 php artisan serve
 ```
@@ -66,6 +67,7 @@ What each step does:
 - `cp .env.example .env` creates your settings file. On Windows Command Prompt, use `copy .env.example .env`.
 - `php artisan key:generate` writes an `APP_KEY` into `.env`. **Without this key every page shows a 500 error.**
 - `php artisan migrate:fresh --seed` creates the SQLite database (`database/database.sqlite`), its tables and the demo data. Run it again whenever you want to start over with fresh demo data.
+- `php artisan storage:link` makes the uploaded ticket screenshots (saved in `storage/app/public/screenshots`) visible in the browser. The app also works without it, but then the screenshots do not show.
 
 If you use Laravel Herd, you can skip `php artisan serve`: put the project in your Herd folder and open `http://<folder-name>.test`.
 
@@ -96,6 +98,8 @@ Vercel runs the app as a Docker container. Everything it needs is in the reposit
 - `Caddyfile`: the web server configuration (serves the `public` folder).
 
 Your `.env` file and your SQLite database are **not** sent to Vercel. Vercel does not keep files between requests, so the deployed app uses an external PostgreSQL database (Neon), and gets its settings from environment variables that you add in the Vercel dashboard. Your local copy keeps using SQLite.
+
+For the same reason, **screenshot uploads are turned off on Vercel** (`HELPDESK_SCREENSHOTS_ENABLED=false` in the `Dockerfile`): an uploaded file would disappear after the request. On your computer they stay on (`HELPDESK_SCREENSHOTS_ENABLED=true` in `.env`).
 
 > [!IMPORTANT]
 > The app stores its sessions in the database, so **every page** (even the home page) needs all three of these before it works. If one of them is missing, every page shows **500 Server Error**:
@@ -226,6 +230,7 @@ The `Dockerfile` sets the other production settings, so you do not add them in V
 | `SESSION_DRIVER`, `CACHE_STORE` | database | Every Vercel instance shares the same sessions and cache   |
 | `SESSION_SECURE_COOKIE`       | true       | Cookies are only sent over HTTPS                             |
 | `LOG_CHANNEL`                 | stderr     | Errors appear in the **Logs** tab of Vercel                  |
+| `HELPDESK_SCREENSHOTS_ENABLED` | false     | Vercel does not keep uploaded files                          |
 
 ### Later updates
 
