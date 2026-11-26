@@ -1,3 +1,6 @@
+{{-- The header of every page. The menu links are defined in App\View\Components\AppLayout. --}}
+@props(['menu'])
+
 <nav x-data="{ open: false }" class="bg-harbour text-white">
     <!-- Primary Navigation Menu -->
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -8,35 +11,14 @@
                     <x-wordmark />
                 </a>
 
-                <!-- Navigation Links -->
-                @auth
-                    <div class="hidden h-full gap-6 sm:flex">
-                        @if (auth()->user()->isAdmin())
-                            <x-breeze.nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-                                Admin
-                            </x-breeze.nav-link>
-                            <x-breeze.nav-link :href="route('admin.tickets.index')" :active="request()->routeIs('admin.tickets.*')">
-                                Tickets
-                            </x-breeze.nav-link>
-                            <x-breeze.nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
-                                Categories
-                            </x-breeze.nav-link>
-                            <x-breeze.nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                                Users
-                            </x-breeze.nav-link>
-                        @else
-                            <x-breeze.nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                                Dashboard
-                            </x-breeze.nav-link>
-                            <x-breeze.nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index', 'tickets.show', 'tickets.edit')">
-                                My tickets
-                            </x-breeze.nav-link>
-                            <x-breeze.nav-link :href="route('tickets.create')" :active="request()->routeIs('tickets.create')">
-                                New ticket
-                            </x-breeze.nav-link>
-                        @endif
-                    </div>
-                @endauth
+                <!-- Navigation Links (the menu from AppLayout) -->
+                <div class="hidden h-full gap-6 sm:flex">
+                    @foreach ($menu as $link)
+                        <x-breeze.nav-link :href="route($link['route'])" :active="request()->routeIs($link['active'])">
+                            {{ $link['label'] }}
+                        </x-breeze.nav-link>
+                    @endforeach
+                </div>
             </div>
 
             <!-- Settings Dropdown / Guest Links -->
@@ -91,34 +73,16 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden border-t border-white/10 sm:hidden">
-        @auth
-            <div class="space-y-1 pb-3 pt-2">
-                @if (auth()->user()->isAdmin())
-                    <x-breeze.responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-                        Admin
-                    </x-breeze.responsive-nav-link>
-                    <x-breeze.responsive-nav-link :href="route('admin.tickets.index')" :active="request()->routeIs('admin.tickets.*')">
-                        Tickets
-                    </x-breeze.responsive-nav-link>
-                    <x-breeze.responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
-                        Categories
-                    </x-breeze.responsive-nav-link>
-                    <x-breeze.responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                        Users
-                    </x-breeze.responsive-nav-link>
-                @else
-                    <x-breeze.responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        Dashboard
-                    </x-breeze.responsive-nav-link>
-                    <x-breeze.responsive-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index', 'tickets.show', 'tickets.edit')">
-                        My tickets
-                    </x-breeze.responsive-nav-link>
-                    <x-breeze.responsive-nav-link :href="route('tickets.create')" :active="request()->routeIs('tickets.create')">
-                        New ticket
-                    </x-breeze.responsive-nav-link>
-                @endif
-            </div>
+        <!-- The same menu links, for small screens -->
+        <div class="space-y-1 pb-3 pt-2">
+            @foreach ($menu as $link)
+                <x-breeze.responsive-nav-link :href="route($link['route'])" :active="request()->routeIs($link['active'])">
+                    {{ $link['label'] }}
+                </x-breeze.responsive-nav-link>
+            @endforeach
+        </div>
 
+        @auth
             <!-- Responsive Settings Options -->
             <div class="border-t border-white/10 pb-1 pt-4">
                 <div class="px-4">
@@ -144,7 +108,8 @@
                 </div>
             </div>
         @else
-            <div class="space-y-1 pb-3 pt-2">
+            <!-- Log in and register, for visitors who are not logged in -->
+            <div class="space-y-1 border-t border-white/10 pb-3 pt-2">
                 <x-breeze.responsive-nav-link :href="route('login')" :active="request()->routeIs('login')">
                     Log in
                 </x-breeze.responsive-nav-link>

@@ -21,7 +21,8 @@
     @endif
 </head>
 <body class="flex min-h-screen flex-col bg-white font-sans text-ink antialiased">
-    @include('layouts.navigation')
+    {{-- The menu comes from App\View\Components\AppLayout, so it is the same in the header and the footer --}}
+    <x-header :menu="$menu" />
 
     <!-- Page heading -->
     @if ($title)
@@ -66,6 +67,6 @@
         @endif
     </main>
 
-    @include('layouts.footer')
+    <x-footer :menu="$menu" />
 </body>
 </html>

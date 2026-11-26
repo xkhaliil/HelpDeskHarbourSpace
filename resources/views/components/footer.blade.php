@@ -1,3 +1,6 @@
+{{-- The footer of every page. It shows the same menu as the header (defined in App\View\Components\AppLayout). --}}
+@props(['menu'])
+
 <footer class="bg-ink text-white">
     <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3 sm:px-6 lg:px-8">
         <div class="sm:col-span-2">
@@ -13,14 +16,9 @@
             <h2 class="text-xs font-bold uppercase tracking-widest text-white/50">HelpDesk</h2>
 
             <ul class="mt-3 space-y-2 text-sm">
-                <li><a href="{{ route('home') }}" class="hover:underline">Home</a></li>
-                @auth
-                    <li><a href="{{ route('dashboard') }}" class="hover:underline">Dashboard</a></li>
-                    <li><a href="{{ route('profile.edit') }}" class="hover:underline">Profile</a></li>
-                @else
-                    <li><a href="{{ route('login') }}" class="hover:underline">Log in</a></li>
-                    <li><a href="{{ route('register') }}" class="hover:underline">Register</a></li>
-                @endauth
+                @foreach ($menu as $link)
+                    <li><a href="{{ route($link['route']) }}" class="hover:underline">{{ $link['label'] }}</a></li>
+                @endforeach
             </ul>
         </div>
     </div>
