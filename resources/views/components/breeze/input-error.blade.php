@@ -1,3 +1,4 @@
+{{-- The validation error messages under a form field (from Laravel Breeze). --}}
 @props(['messages'])
 
 @if ($messages)

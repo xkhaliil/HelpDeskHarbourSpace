@@ -1,3 +1,4 @@
+{{-- Admin: the dashboard with the tickets per status, the tickets this admin handles and the important tickets. --}}
 <x-app-layout title="Admin dashboard">
     <x-slot name="actions">
         <x-button-link :href="route('admin.tickets.index')">All tickets</x-button-link>

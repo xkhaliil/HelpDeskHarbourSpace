@@ -1,3 +1,4 @@
+{{-- A link in the header menu, underlined when it is the current page (from Laravel Breeze). --}}
 @props(['active'])
 
 @php

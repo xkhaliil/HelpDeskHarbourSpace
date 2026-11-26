@@ -1,3 +1,4 @@
+{{-- A ticket as a small card, used on the dashboard of students and teachers. --}}
 @props(['ticket'])
 
 <a href="{{ route('tickets.show', $ticket) }}"

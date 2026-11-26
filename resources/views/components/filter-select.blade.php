@@ -1,3 +1,4 @@
+{{-- A small dropdown for the filters above a ticket list. --}}
 @props([
     'name',
     'label',

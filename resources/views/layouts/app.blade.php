@@ -1,3 +1,4 @@
+{{-- The master template of every page (used by App\View\Components\AppLayout): header, title, flash messages, content and footer. --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>

@@ -1,3 +1,4 @@
+{{-- Admin: all categories with their number of tickets, and the buttons to view, edit and delete them. --}}
 <x-app-layout title="Categories">
     <x-slot name="actions">
         <x-button-link :href="route('admin.categories.create')">New category</x-button-link>

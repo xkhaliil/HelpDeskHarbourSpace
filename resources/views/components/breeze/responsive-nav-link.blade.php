@@ -1,3 +1,4 @@
+{{-- A link in the menu for small screens (from Laravel Breeze). --}}
 @props(['active'])
 
 @php

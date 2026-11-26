@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations: create the categories table, for example "Wi-Fi & Network".
+     */
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {

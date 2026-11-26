@@ -1,3 +1,4 @@
+{{-- The form to choose a new password, opened from the reset link in the email (from Laravel Breeze). --}}
 <x-app-layout title="Reset password">
     <x-card class="mx-auto max-w-md sm:p-8">
         <form method="POST" action="{{ route('password.store') }}">

@@ -1,3 +1,4 @@
+{{-- Asks for the password again before a sensitive action (from Laravel Breeze). --}}
 <x-app-layout title="Confirm password">
     <x-card class="mx-auto max-w-md sm:p-8">
         <div class="mb-4 text-sm text-gray-600">

@@ -1,3 +1,4 @@
+{{-- A dropdown field with its label and its validation error. "options" is a list of [key, value] pairs. --}}
 @props([
     'name',
     'label',

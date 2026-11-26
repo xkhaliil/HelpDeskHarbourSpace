@@ -1,3 +1,4 @@
+{{-- A green message, for example after a password reset link was sent (from Laravel Breeze). --}}
 @props(['status'])
 
 @if ($status)

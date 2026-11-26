@@ -1,3 +1,4 @@
+{{-- Admin: the form to change the name and the description of a category. --}}
 <x-app-layout title="Edit category">
     <x-card class="max-w-xl">
         <form action="{{ route('admin.categories.update', $category) }}" method="POST" class="space-y-6">

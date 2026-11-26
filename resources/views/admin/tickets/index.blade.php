@@ -1,3 +1,4 @@
+{{-- Admin: all tickets, with a search on the title and filters (status, category, priority, role). --}}
 <x-app-layout title="All tickets">
     <!-- Search and filters -->
     <form action="{{ route('admin.tickets.index') }}" method="GET" class="mb-6 rounded-xl border border-gray-200 bg-gray-50 p-4">

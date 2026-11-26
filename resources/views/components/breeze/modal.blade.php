@@ -1,3 +1,4 @@
+{{-- A popup window, made with Alpine.js (from Laravel Breeze). --}}
 @props([
     'name',
     'show' => false,

@@ -1,3 +1,4 @@
+{{-- Admin: the form to create a new category. --}}
 <x-app-layout title="New category">
     <x-card class="max-w-xl">
         <form action="{{ route('admin.categories.store') }}" method="POST" class="space-y-6">

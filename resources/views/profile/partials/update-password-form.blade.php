@@ -1,3 +1,4 @@
+{{-- The form to change your password (from Laravel Breeze). --}}
 <section>
     <header>
         <h2 class="text-lg font-black uppercase tracking-tight text-ink">

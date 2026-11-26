@@ -1,3 +1,4 @@
+{{-- The form to report a new problem (the fields are in tickets/partials/form). --}}
 <x-app-layout title="New ticket">
     <x-card class="max-w-2xl sm:p-8">
         <form action="{{ route('tickets.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">

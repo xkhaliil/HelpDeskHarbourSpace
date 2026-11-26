@@ -1,3 +1,4 @@
+{{-- The profile page: change your name, email and password, or delete your account (from Laravel Breeze). --}}
 <x-app-layout title="Profile">
     <div class="space-y-6">
         <x-card class="sm:p-8">

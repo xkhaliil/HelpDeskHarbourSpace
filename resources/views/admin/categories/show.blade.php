@@ -1,3 +1,4 @@
+{{-- Admin: one category with all its tickets (10 per page). --}}
 <x-app-layout :title="$category->name">
     <x-slot name="actions">
         <x-button-link :href="route('admin.categories.edit', $category)">Edit</x-button-link>

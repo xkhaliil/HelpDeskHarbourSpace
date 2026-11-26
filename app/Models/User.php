@@ -93,16 +93,25 @@ class User extends Authenticatable
         return $this->belongsToMany(Ticket::class);
     }
 
+    /**
+     * Is this user a member of the IT and campus staff?
+     */
     public function isAdmin(): bool
     {
         return $this->role === Role::Admin;
     }
 
+    /**
+     * Is this user a teacher? Teachers can also choose the priority of their tickets.
+     */
     public function isTeacher(): bool
     {
         return $this->role === Role::Teacher;
     }
 
+    /**
+     * Is this user a student?
+     */
     public function isStudent(): bool
     {
         return $this->role === Role::Student;

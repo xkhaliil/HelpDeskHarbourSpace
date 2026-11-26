@@ -1,3 +1,4 @@
+{{-- The public welcome page: what the HelpDesk is, how to report a problem and the categories. --}}
 <x-app-layout :full-width="true">
     <!-- Hero -->
     <section class="bg-harbour text-white">

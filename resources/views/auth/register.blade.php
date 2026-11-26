@@ -1,3 +1,4 @@
+{{-- The registration form. The email address decides the role (see RegisteredUserController). --}}
 <x-app-layout title="Register">
     <x-card class="mx-auto max-w-md sm:p-8">
         <form method="POST" action="{{ route('register') }}">

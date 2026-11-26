@@ -1,3 +1,4 @@
+{{-- A link that looks like a button. "variant" chooses the colours: primary, secondary or light. --}}
 @props(['variant' => 'primary'])
 
 @php

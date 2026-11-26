@@ -1,3 +1,4 @@
+{{-- A text area with its label and its validation error. --}}
 @props([
     'name',
     'label',

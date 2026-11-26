@@ -1,3 +1,4 @@
+{{-- Asks the user to click the link in the verification email (from Laravel Breeze). --}}
 <x-app-layout title="Verify email">
     <x-card class="mx-auto max-w-md sm:p-8">
         <div class="mb-4 text-sm text-gray-600">

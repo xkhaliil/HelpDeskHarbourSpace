@@ -1,1 +1,2 @@
+{{-- One link inside a dropdown menu (from Laravel Breeze). --}}
 <a {{ $attributes->merge(['class' => 'block w-full px-4 py-2 text-start text-sm font-medium leading-5 text-ink transition hover:bg-harbour-light focus:bg-harbour-light focus:outline-hidden']) }}>{{ $slot }}</a>

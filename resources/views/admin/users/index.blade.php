@@ -1,3 +1,4 @@
+{{-- Admin: the accounts waiting for approval, and all approved users with their role. --}}
 <x-app-layout title="Users">
     <x-slot name="actions">
         <x-button-link :href="route('admin.users.create')">New user</x-button-link>

@@ -1,3 +1,4 @@
+{{-- The login form. Outside production it also lists the demo accounts. --}}
 <x-app-layout title="Log in">
     <x-card class="mx-auto max-w-md sm:p-8">
         <!-- Session Status -->

@@ -60,6 +60,9 @@ class UserFactory extends Factory
         ]);
     }
 
+    /**
+     * A student account.
+     */
     public function student(): static
     {
         return $this->state(fn (array $attributes) => [
@@ -67,6 +70,9 @@ class UserFactory extends Factory
         ]);
     }
 
+    /**
+     * A teacher account, with an address of the teacher email domain.
+     */
     public function teacher(): static
     {
         return $this->state(fn (array $attributes) => [
@@ -75,6 +81,9 @@ class UserFactory extends Factory
         ]);
     }
 
+    /**
+     * An admin account (a member of the IT and campus staff).
+     */
     public function admin(): static
     {
         return $this->state(fn (array $attributes) => [

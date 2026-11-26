@@ -1,3 +1,4 @@
+{{-- The form to delete your own account (from Laravel Breeze). --}}
 <section class="space-y-6">
     <header>
         <h2 class="text-lg font-black uppercase tracking-tight text-ink">

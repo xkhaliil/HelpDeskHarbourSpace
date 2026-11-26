@@ -1,3 +1,4 @@
+{{-- One of your tickets, with its conversation and the details. --}}
 <x-app-layout :title="$ticket->title">
     <x-slot name="actions">
         @can('update', $ticket)

@@ -114,31 +114,49 @@ class TicketFactory extends Factory
         ];
     }
 
+    /**
+     * A ticket that nobody has picked up yet.
+     */
     public function open(): static
     {
         return $this->state(fn (array $attributes) => ['status' => TicketStatus::Open]);
     }
 
+    /**
+     * A ticket the IT team is working on.
+     */
     public function inProgress(): static
     {
         return $this->state(fn (array $attributes) => ['status' => TicketStatus::InProgress]);
     }
 
+    /**
+     * A ticket the IT team has solved, waiting for the owner to close it.
+     */
     public function solved(): static
     {
         return $this->state(fn (array $attributes) => ['status' => TicketStatus::Solved]);
     }
 
+    /**
+     * A ticket that is finished: no more changes or replies.
+     */
     public function closed(): static
     {
         return $this->state(fn (array $attributes) => ['status' => TicketStatus::Closed]);
     }
 
+    /**
+     * A ticket with the urgent priority.
+     */
     public function urgent(): static
     {
         return $this->state(fn (array $attributes) => ['priority' => TicketPriority::Urgent]);
     }
 
+    /**
+     * A ticket with the high priority.
+     */
     public function high(): static
     {
         return $this->state(fn (array $attributes) => ['priority' => TicketPriority::High]);

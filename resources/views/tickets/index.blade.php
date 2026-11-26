@@ -1,3 +1,4 @@
+{{-- Your own tickets, with a filter on the status. --}}
 <x-app-layout title="My tickets">
     <x-slot name="actions">
         <x-button-link :href="route('tickets.create')">New ticket</x-button-link>

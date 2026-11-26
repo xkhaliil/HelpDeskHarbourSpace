@@ -1,3 +1,4 @@
+{{-- A dropdown menu that opens on click, made with Alpine.js (from Laravel Breeze). --}}
 @props(['align' => 'right', 'width' => '48', 'contentClasses' => 'py-1 bg-white'])
 
 @php

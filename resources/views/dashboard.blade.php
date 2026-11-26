@@ -1,3 +1,4 @@
+{{-- The dashboard of students and teachers: their ticket numbers and their latest tickets. --}}
 <x-app-layout title="Dashboard">
     <x-slot name="actions">
         <x-button-link :href="route('tickets.create')">Report a problem</x-button-link>

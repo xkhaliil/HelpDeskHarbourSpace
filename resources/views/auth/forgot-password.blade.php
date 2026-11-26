@@ -1,3 +1,4 @@
+{{-- The form to ask for a password reset link by email (from Laravel Breeze). --}}
 <x-app-layout title="Forgot password">
     <x-card class="mx-auto max-w-md sm:p-8">
         <div class="mb-4 text-sm text-gray-600">

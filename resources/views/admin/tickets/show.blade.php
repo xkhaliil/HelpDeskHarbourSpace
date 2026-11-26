@@ -1,3 +1,4 @@
+{{-- Admin: one ticket with its conversation, and the form to change the status, the priority and who handles it. --}}
 <x-app-layout :title="$ticket->title">
     <x-slot name="actions">
         <x-button-link :href="route('admin.tickets.index')" variant="secondary">All tickets</x-button-link>

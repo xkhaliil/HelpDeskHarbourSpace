@@ -1,3 +1,4 @@
+{{-- A password field with its label and its validation error. --}}
 @props([
     'name',
     'label',
