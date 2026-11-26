@@ -25,7 +25,8 @@ class TicketController extends Controller
             return redirect()->route('admin.tickets.index');
         }
 
-        $query = $request->user()->tickets()->with('category')->latest();
+        // The category of every ticket is loaded up front, with only the columns the list shows.
+        $query = $request->user()->tickets()->with('category:id,name')->latest();
 
         if ($request->filled('status')) {
             $query->where('status', $request->validated('status'));
@@ -88,7 +89,8 @@ class TicketController extends Controller
 
         Gate::authorize('view', $ticket);
 
-        $ticket->load(['category', 'replies.user', 'assignees']);
+        // Everything the page shows, loaded up front. "category:id,name" means: only these columns.
+        $ticket->load(['category:id,name', 'replies.user:id,name,role', 'assignees']);
 
         return view('tickets.show', compact('ticket'));
     }

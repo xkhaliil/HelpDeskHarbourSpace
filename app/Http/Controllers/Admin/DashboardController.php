@@ -18,10 +18,13 @@ class DashboardController extends Controller
      */
     public function index(Request $request): View
     {
+        // In every list below, with() loads the user and the category of all tickets up front
+        // (no N+1 problem), and only the columns the page shows: "user:id,name".
+
         // The unsolved tickets that the logged-in admin handles
         // (the other side of the many-to-many relationship, see User::assignedTickets()).
         $assignedTickets = $request->user()->assignedTickets()
-            ->with(['user', 'category'])
+            ->with(['user:id,name', 'category:id,name'])
             ->whereIn('status', [TicketStatus::Open, TicketStatus::InProgress])
             ->latest()
             ->take(5)
@@ -32,13 +35,13 @@ class DashboardController extends Controller
             $countsPerStatus[$status->value] = Ticket::where('status', $status)->count();
         }
 
-        $urgentTickets = Ticket::with(['user', 'category'])
+        $urgentTickets = Ticket::with(['user:id,name', 'category:id,name'])
             ->where('priority', TicketPriority::Urgent)
             ->latest()
             ->take(5)
             ->get();
 
-        $highTickets = Ticket::with(['user', 'category'])
+        $highTickets = Ticket::with(['user:id,name', 'category:id,name'])
             ->where('priority', TicketPriority::High)
             ->latest()
             ->take(5)

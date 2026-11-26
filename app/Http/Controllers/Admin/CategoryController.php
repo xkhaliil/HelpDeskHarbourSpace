@@ -49,7 +49,8 @@ class CategoryController extends Controller
      */
     public function show(Category $category): View
     {
-        $tickets = $category->tickets()->with('user')->latest()->paginate(10);
+        // "user:id,name" loads only the columns the page needs, not the whole user (with password).
+        $tickets = $category->tickets()->with('user:id,name')->latest()->paginate(10);
 
         return view('admin.categories.show', compact('category', 'tickets'));
     }

@@ -21,7 +21,8 @@ class TicketController extends Controller
      */
     public function index(AdminFilterTicketsRequest $request): View
     {
-        $query = Ticket::with(['user', 'category'])->latest();
+        // Load the user and the category of every ticket up front, with only the columns the list shows.
+        $query = Ticket::with(['user:id,name,role', 'category:id,name'])->latest();
 
         // whereLike ignores upper and lower case on every database (SQLite, MySQL and Postgres).
         if ($request->filled('search')) {
@@ -60,7 +61,8 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket): View
     {
-        $ticket->load(['user', 'category', 'replies.user', 'assignees']);
+        // Everything the page shows, loaded up front. "user:id,name,email,role" means: only these columns.
+        $ticket->load(['user:id,name,email,role', 'category:id,name', 'replies.user:id,name,role', 'assignees']);
 
         return view('admin.tickets.show', [
             'ticket' => $ticket,

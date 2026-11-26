@@ -69,8 +69,9 @@ class UserController extends Controller
     {
         return view('admin.users.show', [
             'user' => $user,
-            'tickets' => $user->tickets()->with('category')->latest()->get(),
-            'assignedTickets' => $user->assignedTickets()->with('category')->latest()->get(),
+            // The category of every ticket is loaded up front, with only the columns the list shows.
+            'tickets' => $user->tickets()->with('category:id,name')->latest()->get(),
+            'assignedTickets' => $user->assignedTickets()->with('category:id,name')->latest()->get(),
         ]);
     }
 

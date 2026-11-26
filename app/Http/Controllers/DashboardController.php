@@ -24,7 +24,8 @@ class DashboardController extends Controller
             'openCount' => $user->tickets()->where('status', TicketStatus::Open)->count(),
             'inProgressCount' => $user->tickets()->where('status', TicketStatus::InProgress)->count(),
             'solvedCount' => $user->tickets()->where('status', TicketStatus::Solved)->count(),
-            'latestTickets' => $user->tickets()->with('category')->latest()->take(6)->get(),
+            // The category is loaded up front (no N+1 problem), with only the columns the cards show.
+            'latestTickets' => $user->tickets()->with('category:id,name')->latest()->take(6)->get(),
         ]);
     }
 }

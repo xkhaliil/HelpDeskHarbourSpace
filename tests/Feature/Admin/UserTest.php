@@ -182,7 +182,7 @@ test('admins can create an account that can log in right away', function () {
     expect($user->role)->toBe(Role::Admin)
         ->and($user->isApproved())->toBeTrue();
 
-    auth()->logout();
+    $this->post('/logout');
     $this->post('/login', ['email' => 'laia.ferrer@example.com', 'password' => 'a-strong-password']);
     $this->assertAuthenticatedAs($user);
 });
