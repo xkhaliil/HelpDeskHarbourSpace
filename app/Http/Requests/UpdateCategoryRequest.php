@@ -26,6 +26,8 @@ class UpdateCategoryRequest extends FormRequest
         return [
             // The category may keep its own name, but not take the name of another one.
             'name' => ['required', 'string', 'min:2', 'max:100', Rule::unique('categories', 'name')->ignore($this->route('category'))],
+            // Optional: a short text shown on the public category pages.
+            'description' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

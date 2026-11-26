@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -12,6 +13,9 @@ use Illuminate\Support\Facades\Route;
  * Public Website routes
  */
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Everybody can see the categories, to know what can be reported
+Route::resource('categories', CategoryController::class)->only(['index', 'show']);
 
 /*
  * Authentication routes

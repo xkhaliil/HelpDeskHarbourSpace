@@ -99,3 +99,23 @@ test('admins can delete a category', function () {
 
     $this->assertModelMissing($category);
 });
+
+test('admins can give a category a description', function () {
+    $admin = User::factory()->admin()->create();
+    $category = Category::factory()->create(['name' => 'Audio']);
+
+    $this->actingAs($admin)
+        ->put("/admin/categories/{$category->id}", [
+            'name' => 'Audio',
+            'description' => 'Microphones and speakers in the event rooms.',
+        ])
+        ->assertSessionHasNoErrors();
+
+    expect($category->refresh()->description)->toBe('Microphones and speakers in the event rooms.');
+});
+
+test('a category description can have at most 500 characters', function () {
+    $this->actingAs(User::factory()->admin()->create())
+        ->post('/admin/categories', ['name' => 'Audio & Video', 'description' => str_repeat('a', 501)])
+        ->assertSessionHasErrors(['description' => 'The description field must not be greater than 500 characters.']);
+});

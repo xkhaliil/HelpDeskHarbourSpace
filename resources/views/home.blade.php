@@ -79,7 +79,12 @@
 
                 <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($categories as $category)
-                        <li class="rounded-xl border-l-4 border-harbour bg-white p-5 font-bold shadow-sm">{{ $category->name }}</li>
+                        <li>
+                            <a href="{{ route('categories.show', $category) }}" class="block h-full rounded-xl border-l-4 border-harbour bg-white p-5 shadow-sm transition hover:shadow-md">
+                                <span class="font-bold">{{ $category->name }}</span>
+                                <span class="mt-1 block text-sm text-gray-600">{{ $category->description }}</span>
+                            </a>
+                        </li>
                     @endforeach
                 </ul>
             </div>

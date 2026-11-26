@@ -24,6 +24,8 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:2', 'max:100', 'unique:categories,name'],
+            // Optional: a short text shown on the public category pages.
+            'description' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

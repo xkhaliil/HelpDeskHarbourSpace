@@ -4,6 +4,10 @@
         <x-button-link :href="route('admin.categories.index')" variant="secondary">All categories</x-button-link>
     </x-slot>
 
+    @if ($category->description)
+        <p class="mb-8 max-w-2xl text-lg text-gray-600">{{ $category->description }}</p>
+    @endif
+
     <h2 class="mb-4 text-xl font-black uppercase tracking-tight">Tickets in this category ({{ $tickets->total() }})</h2>
 
     <div class="overflow-x-auto rounded-xl border border-gray-200">

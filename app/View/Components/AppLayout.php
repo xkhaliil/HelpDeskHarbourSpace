@@ -2,6 +2,8 @@
 
 namespace App\View\Components;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
@@ -41,12 +43,14 @@ class AppLayout extends Component
      */
     protected function menu(): array
     {
-        // Everybody sees the home page, also visitors who are not logged in.
+        // Everybody sees the public pages, also visitors who are not logged in.
         $links = [
             ['label' => 'Home', 'route' => 'home', 'active' => 'home'],
+            ['label' => 'Categories', 'route' => 'categories.index', 'active' => 'categories.*'],
         ];
 
-        $user = auth()->user();
+        /** @var User|null $user The logged-in user, or null for a visitor who is not logged in. */
+        $user = Auth::user();
 
         // Visitors who are not logged in only get the public links.
         if ($user === null) {

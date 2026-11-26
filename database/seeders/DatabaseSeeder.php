@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'sofia.martin@harbour.space',
         ]);
 
-        // The categories of the HelpDesk.
+        // The categories of the HelpDesk. The CategoryFactory adds the matching description.
         $categoryNames = [
             'Wi-Fi & Network',
             'Accounts & Portal',
