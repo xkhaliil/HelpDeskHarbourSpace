@@ -75,7 +75,7 @@ All seeded accounts use the password `password`.
 
 | Role    | Email                   |
 |---------|-------------------------|
-| Admin   | `admin@admin.com`       |
+| Admin   | `admin@example.com`       |
 | Teacher | `teacher@harbour.space` |
 | Student | `student@harbour.space` |
 
@@ -204,7 +204,7 @@ You need this step because the deployment from step 1 was created before the `AP
 
 ### Step 6: Check that it works
 
-Open your site and log in with `admin@admin.com` and the password `password`. If you still see **500 Server Error**, go to [Troubleshooting](#troubleshooting-500-server-error).
+Open your site and log in with `admin@example.com` and the password `password`. If you still see **500 Server Error**, go to [Troubleshooting](#troubleshooting-500-server-error).
 
 ### Checklist
 

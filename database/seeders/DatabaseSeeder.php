@@ -22,9 +22,10 @@ class DatabaseSeeder extends Seeder
     {
         // The three accounts for the demo. They are already approved, so they can log in
         // right away. The password of every account is "password".
+        // The project requirements ask for an admin with the email admin@example.com.
         $admin = User::factory()->admin()->create([
             'name' => 'Admin',
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
         ]);
         User::factory()->teacher()->create([
             'name' => 'Marta Vidal',

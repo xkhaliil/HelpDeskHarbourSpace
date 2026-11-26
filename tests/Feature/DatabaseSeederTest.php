@@ -9,7 +9,7 @@ use App\Models\User;
 test('the seeder creates the three approved demo accounts', function () {
     $this->seed();
 
-    $admin = User::where('email', 'admin@admin.com')->first();
+    $admin = User::where('email', 'admin@example.com')->first();
     $teacher = User::where('email', 'teacher@harbour.space')->first();
     $student = User::where('email', 'student@harbour.space')->first();
 
@@ -19,7 +19,7 @@ test('the seeder creates the three approved demo accounts', function () {
         ->and($student->role)->toBe(Role::Student)
         ->and($admin->isApproved() && $teacher->isApproved() && $student->isApproved())->toBeTrue();
 
-    $this->post('/login', ['email' => 'admin@admin.com', 'password' => 'password']);
+    $this->post('/login', ['email' => 'admin@example.com', 'password' => 'password']);
     $this->assertAuthenticatedAs($admin);
 });
 

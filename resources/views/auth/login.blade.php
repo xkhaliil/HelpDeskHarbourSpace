@@ -11,7 +11,7 @@
                 <div class="mb-6 rounded-md bg-harbour-light p-3 text-sm text-harbour">
                     <p class="font-bold">Demo accounts (password: password)</p>
                     <ul class="mt-1">
-                        <li>admin@admin.com</li>
+                        <li>admin@example.com</li>
                         <li>teacher@harbour.space</li>
                         <li>student@harbour.space</li>
                     </ul>
