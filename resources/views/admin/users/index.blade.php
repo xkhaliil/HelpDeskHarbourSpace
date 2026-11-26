@@ -1,4 +1,8 @@
 <x-app-layout title="Users">
+    <x-slot name="actions">
+        <x-button-link :href="route('admin.users.create')">New user</x-button-link>
+    </x-slot>
+
     <!-- Accounts waiting for approval -->
     <h2 class="mb-4 text-xl font-black uppercase tracking-tight">Waiting for approval ({{ $pendingUsers->count() }})</h2>
 
@@ -41,6 +45,13 @@
 
                                     <button type="submit" class="rounded-full bg-harbour px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-white transition hover:bg-harbour-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-harbour">Approve</button>
                                 </form>
+
+                                {{-- Somebody who registered by mistake can be removed instead --}}
+                                <form action="{{ route('admin.users.destroy', $pendingUser) }}" method="POST" class="mt-2" onsubmit="return confirm('Delete this account?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-xs font-bold uppercase tracking-widest text-red-600 hover:text-red-700">Delete</button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -59,36 +70,34 @@
                     <th scope="col" class="px-4 py-3">Name</th>
                     <th scope="col" class="px-4 py-3">Role</th>
                     <th scope="col" class="px-4 py-3">Tickets</th>
-                    <th scope="col" class="px-4 py-3">Change role</th>
+                    <th scope="col" class="px-4 py-3 text-right">Actions</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
                 @foreach ($users as $user)
                     <tr>
                         <td class="px-4 py-3">
-                            <div class="font-semibold">{{ $user->name }}</div>
+                            <a href="{{ route('admin.users.show', $user) }}" class="font-semibold hover:text-harbour hover:underline">{{ $user->name }}</a>
                             <div class="text-xs text-gray-500">{{ $user->email }}</div>
                         </td>
                         <td class="px-4 py-3"><x-badge :value="$user->role" /></td>
                         <td class="px-4 py-3 text-gray-600">{{ $user->tickets_count }}</td>
                         <td class="px-4 py-3">
-                            @if ($user->is(auth()->user()))
-                                <span class="text-xs text-gray-500">This is you</span>
-                            @else
-                                <form action="{{ route('admin.users.update', $user) }}" method="POST" class="flex items-center gap-2">
-                                    @csrf
-                                    @method('PUT')
+                            <div class="flex items-center justify-end gap-4 text-xs font-bold uppercase tracking-widest">
+                                <a href="{{ route('admin.users.show', $user) }}" class="text-gray-600 hover:text-ink">View</a>
+                                <a href="{{ route('admin.users.edit', $user) }}" class="text-harbour hover:text-harbour-dark">Edit</a>
 
-                                    <label for="role-{{ $user->id }}" class="sr-only">Role of {{ $user->name }}</label>
-                                    <select id="role-{{ $user->id }}" name="role" class="rounded-md border border-gray-300 py-1.5 pl-3 pr-8 text-sm shadow-xs focus:border-harbour focus:ring-harbour">
-                                        @foreach ($roles as $role)
-                                            <option value="{{ $role->value }}" @selected($user->role === $role)>{{ $role->label() }}</option>
-                                        @endforeach
-                                    </select>
-
-                                    <button type="submit" class="rounded-full border border-harbour px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-harbour transition hover:bg-harbour hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-harbour">Save</button>
-                                </form>
-                            @endif
+                                {{-- Admins cannot delete their own account here (see Admin\UserController@destroy) --}}
+                                @if ($user->is(auth()->user()))
+                                    <span class="font-normal normal-case tracking-normal text-gray-500">This is you</span>
+                                @else
+                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Delete this account?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="font-bold uppercase tracking-widest text-red-600 hover:text-red-700">Delete</button>
+                                    </form>
+                                @endif
+                            </div>
                         </td>
                     </tr>
                 @endforeach

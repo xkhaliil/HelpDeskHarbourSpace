@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateUserRoleRequest;
+use App\Http\Requests\ApproveUserRequest;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -32,27 +35,104 @@ class UserController extends Controller
     }
 
     /**
-     * Change the role of a user.
+     * Show the form for creating a new account.
      */
-    public function update(UpdateUserRoleRequest $request, User $user): RedirectResponse
+    public function create(): View
+    {
+        return view('admin.users.create', [
+            'roles' => Role::cases(),
+        ]);
+    }
+
+    /**
+     * Store a new account. An account made by an admin can log in right away.
+     */
+    public function store(StoreUserRequest $request): RedirectResponse
+    {
+        $user = User::create([
+            'name' => $request->validated('name'),
+            'email' => $request->validated('email'),
+            'role' => $request->validated('role'),
+            // The "hashed" cast of the User model hashes the password before saving it.
+            'password' => $request->validated('password'),
+            'approved_at' => now(),
+        ]);
+
+        return redirect()->route('admin.users.show', $user)
+            ->with('success', "The account of {$user->name} has been created.");
+    }
+
+    /**
+     * Show one user, with the tickets they reported and the tickets they handle.
+     */
+    public function show(User $user): View
+    {
+        return view('admin.users.show', [
+            'user' => $user,
+            'tickets' => $user->tickets()->with('category')->latest()->get(),
+            'assignedTickets' => $user->assignedTickets()->with('category')->latest()->get(),
+        ]);
+    }
+
+    /**
+     * Show the form for changing the name, the email address and the role of a user.
+     */
+    public function edit(User $user): View
+    {
+        return view('admin.users.edit', [
+            'user' => $user,
+            'roles' => Role::cases(),
+        ]);
+    }
+
+    /**
+     * Save the name, the email address and the role of a user.
+     */
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
         // Admins cannot change their own role, so there is always at least one admin left.
-        if ($user->is($request->user())) {
-            return redirect()->route('admin.users.index')
+        if ($user->is($request->user()) && $request->validated('role') !== $user->role->value) {
+            return redirect()->route('admin.users.edit', $user)
                 ->with('error', 'You cannot change your own role.');
         }
 
-        $user->update(['role' => $request->validated('role')]);
+        $user->update($request->validated());
 
         return redirect()->route('admin.users.index')
-            ->with('success', "The role of {$user->name} is now: {$user->role->label()}.");
+            ->with('success', "The account of {$user->name} has been updated. Role: {$user->role->label()}.");
+    }
+
+    /**
+     * Delete an account, for example somebody who registered by mistake.
+     */
+    public function destroy(Request $request, User $user): RedirectResponse
+    {
+        // Admins delete their own account on their profile page, not here.
+        if ($user->is($request->user())) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'You cannot delete your own account here. Use your profile page.');
+        }
+
+        // The tickets and replies of a user stay, so the history of the HelpDesk is complete.
+        // That is why a user who still has tickets or replies cannot be deleted.
+        if ($user->tickets()->exists() || $user->replies()->exists()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', "{$user->name} still has tickets or replies, so the account cannot be deleted.");
+        }
+
+        // An admin may still handle tickets: those links in the pivot table are removed first.
+        $user->assignedTickets()->detach();
+        $user->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "The account of {$user->name} has been deleted.");
     }
 
     /**
      * Approve an account that registered without a student or teacher address,
      * and give it a role at the same time.
      */
-    public function approve(UpdateUserRoleRequest $request, User $user): RedirectResponse
+    public function approve(ApproveUserRequest $request, User $user): RedirectResponse
     {
         if ($user->isApproved()) {
             return redirect()->route('admin.users.index')
