@@ -69,3 +69,64 @@ test('a reply needs a message', function () {
         ->post("/tickets/{$ticket->id}/replies", ['message' => ''])
         ->assertSessionHasErrors(['message' => 'The message field is required.']);
 });
+
+test('authors can open the form to change their reply', function () {
+    $reply = Reply::factory()->for(Ticket::factory()->open()->create())->create(['message' => 'It is still broken.']);
+
+    $this->actingAs($reply->user)
+        ->get("/replies/{$reply->id}/edit")
+        ->assertOk()
+        ->assertSee('It is still broken.');
+});
+
+test('authors can change their reply', function () {
+    $reply = Reply::factory()->for(Ticket::factory()->open()->create())->create();
+
+    $this->actingAs($reply->user)
+        ->put("/replies/{$reply->id}", ['message' => 'It works again, thanks!'])
+        ->assertRedirect("/tickets/{$reply->ticket_id}")
+        ->assertSessionHas('success', 'Your reply has been updated.');
+
+    expect($reply->refresh()->message)->toBe('It works again, thanks!');
+});
+
+test('a changed reply still needs a message', function () {
+    $reply = Reply::factory()->for(Ticket::factory()->open()->create())->create();
+
+    $this->actingAs($reply->user)
+        ->put("/replies/{$reply->id}", ['message' => ''])
+        ->assertSessionHasErrors(['message' => 'The message field is required.']);
+});
+
+test('authors can delete their reply', function () {
+    $reply = Reply::factory()->for(Ticket::factory()->open()->create())->create();
+
+    $this->actingAs($reply->user)
+        ->delete("/replies/{$reply->id}")
+        ->assertRedirect("/tickets/{$reply->ticket_id}")
+        ->assertSessionHas('success', 'Your reply has been deleted.');
+
+    $this->assertModelMissing($reply);
+});
+
+test('users cannot change or delete the reply of somebody else', function () {
+    $reply = Reply::factory()->for(Ticket::factory()->open()->create())->create(['message' => 'Original message']);
+    $otherUser = User::factory()->student()->create();
+
+    $this->actingAs($otherUser)->get("/replies/{$reply->id}/edit")->assertForbidden();
+    $this->actingAs($otherUser)->put("/replies/{$reply->id}", ['message' => 'Changed'])->assertForbidden();
+    $this->actingAs($otherUser)->delete("/replies/{$reply->id}")->assertForbidden();
+
+    expect($reply->refresh()->message)->toBe('Original message');
+});
+
+test('the ticket page only shows the edit link on your own replies', function () {
+    $ticket = Ticket::factory()->open()->create();
+    $ownReply = Reply::factory()->for($ticket)->for($ticket->user)->create();
+    $adminReply = Reply::factory()->for($ticket)->for(User::factory()->admin()->create())->create();
+
+    $this->actingAs($ticket->user)
+        ->get("/tickets/{$ticket->id}")
+        ->assertSee(route('replies.edit', $ownReply))
+        ->assertDontSee(route('replies.edit', $adminReply));
+});

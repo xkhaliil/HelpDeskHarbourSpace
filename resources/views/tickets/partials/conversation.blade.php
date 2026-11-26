@@ -16,6 +16,19 @@
                 </div>
 
                 <p class="mt-2 whitespace-pre-line text-sm">{{ $reply->message }}</p>
+
+                {{-- Only the author of the reply sees these buttons (see App\Policies\ReplyPolicy) --}}
+                @can('update', $reply)
+                    <div class="mt-3 flex items-center gap-4 text-xs font-bold uppercase tracking-widest">
+                        <a href="{{ route('replies.edit', $reply) }}" class="text-harbour hover:text-harbour-dark">Edit</a>
+
+                        <form action="{{ route('replies.destroy', $reply) }}" method="POST" onsubmit="return confirm('Delete this reply?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="font-bold uppercase tracking-widest text-red-600 hover:text-red-700">Delete</button>
+                        </form>
+                    </div>
+                @endcan
             </li>
         @empty
             <li class="text-sm text-gray-500">No replies yet.</li>

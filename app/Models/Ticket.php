@@ -71,7 +71,9 @@ class Ticket extends Model
      */
     public function replies(): HasMany
     {
-        return $this->hasMany(Reply::class)->oldest();
+        // chaperone() gives every loaded reply its ticket ($reply->ticket) without an extra query.
+        // The ReplyPolicy needs it to check the status of the ticket for every reply.
+        return $this->hasMany(Reply::class)->oldest()->chaperone();
     }
 
     /**

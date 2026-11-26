@@ -32,7 +32,11 @@ Route::middleware('auth')->group(function () {
     // Students and teachers manage their own tickets (see App\Policies\TicketPolicy)
     Route::resource('tickets', TicketController::class);
     Route::patch('/tickets/{ticket}/close', [TicketController::class, 'close'])->name('tickets.close');
-    Route::post('/tickets/{ticket}/replies', [ReplyController::class, 'store'])->name('tickets.replies.store');
+
+    // Replies: a new reply belongs to a ticket (/tickets/{ticket}/replies),
+    // the author can change or delete it later (see App\Policies\ReplyPolicy)
+    Route::resource('tickets.replies', ReplyController::class)->only(['store']);
+    Route::resource('replies', ReplyController::class)->only(['edit', 'update', 'destroy']);
 
     // For the user's profile management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
