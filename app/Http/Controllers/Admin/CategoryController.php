@@ -7,6 +7,7 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class CategoryController extends Controller
@@ -35,6 +36,9 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request): RedirectResponse
     {
         Category::create($request->validated());
+
+        // The welcome page has to show the new category, so its cached list is removed.
+        Cache::forget(Category::HOME_PAGE_CACHE_KEY);
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'The category has been created.');
@@ -65,6 +69,9 @@ class CategoryController extends Controller
     {
         $category->update($request->validated());
 
+        // The welcome page has to show the new name and description.
+        Cache::forget(Category::HOME_PAGE_CACHE_KEY);
+
         return redirect()->route('admin.categories.index')
             ->with('success', 'The category has been updated.');
     }
@@ -82,6 +89,9 @@ class CategoryController extends Controller
         }
 
         $category->delete();
+
+        // The welcome page should no longer show the deleted category.
+        Cache::forget(Category::HOME_PAGE_CACHE_KEY);
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'The category has been deleted.');

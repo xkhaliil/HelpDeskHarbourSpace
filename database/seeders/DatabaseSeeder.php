@@ -10,6 +10,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 
 class DatabaseSeeder extends Seeder
 {
@@ -61,6 +62,9 @@ class DatabaseSeeder extends Seeder
         foreach ($categoryNames as $name) {
             Category::factory()->create(['name' => $name]);
         }
+
+        // The welcome page may still have the categories of the old database in its cache.
+        Cache::forget(Category::HOME_PAGE_CACHE_KEY);
 
         // 40 tickets reported by the approved students and teachers, spread over all statuses.
         // The TicketFactory picks a realistic problem and the category that fits it.

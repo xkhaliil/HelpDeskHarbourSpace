@@ -119,3 +119,32 @@ test('a category description can have at most 500 characters', function () {
         ->post('/admin/categories', ['name' => 'Audio & Video', 'description' => str_repeat('a', 501)])
         ->assertSessionHasErrors(['description' => 'The description field must not be greater than 500 characters.']);
 });
+
+test('the welcome page shows a new category right away', function () {
+    $this->get('/');
+
+    $this->actingAs(User::factory()->admin()->create())
+        ->post('/admin/categories', ['name' => 'Old Printers']);
+
+    $this->get('/')->assertSee('Old Printers');
+});
+
+test('the welcome page shows a renamed category right away', function () {
+    $category = Category::factory()->create(['name' => 'Old Printers']);
+    $this->get('/');
+
+    $this->actingAs(User::factory()->admin()->create())
+        ->put("/admin/categories/{$category->id}", ['name' => 'New Printers']);
+
+    $this->get('/')->assertSee('New Printers')->assertDontSee('Old Printers');
+});
+
+test('the welcome page hides a deleted category right away', function () {
+    $category = Category::factory()->create(['name' => 'Old Printers']);
+    $this->get('/');
+
+    $this->actingAs(User::factory()->admin()->create())
+        ->delete("/admin/categories/{$category->id}");
+
+    $this->get('/')->assertDontSee('Old Printers');
+});

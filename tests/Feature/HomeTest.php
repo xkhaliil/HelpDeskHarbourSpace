@@ -24,3 +24,13 @@ test('logged-in users get a link to their dashboard', function () {
         ->assertOk()
         ->assertSee('Go to your dashboard');
 });
+
+test('the welcome page keeps the categories in the cache', function () {
+    Category::factory()->create(['name' => 'Classroom Equipment']);
+    $this->get('/')->assertSee('Classroom Equipment');
+
+    // Created without the admin panel, so the cached list is not removed.
+    Category::factory()->create(['name' => 'Old Printers']);
+
+    $this->get('/')->assertDontSee('Old Printers');
+});
