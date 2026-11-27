@@ -1,0 +1,90 @@
+---
+title: Harbour.Space HelpDesk - UML class diagram
+---
+classDiagram
+    direction TB
+
+    class User {
+        +int id
+        +string name
+        +string email
+        +string password
+        +Role role
+        +datetime approved_at
+        +tickets() HasMany~Ticket~
+        +replies() HasMany~Reply~
+        +assignedTickets() BelongsToMany~Ticket~
+        +isApproved() bool
+        +isAdmin() bool
+        +isTeacher() bool
+        +isStudent() bool
+    }
+
+    class Category {
+        +int id
+        +string name
+        +text description
+        +tickets() HasMany~Ticket~
+    }
+
+    class Ticket {
+        +int id
+        +int user_id
+        +int category_id
+        +string title
+        +text description
+        +string location
+        +TicketPriority priority
+        +TicketStatus status
+        +string screenshot
+        +user() BelongsTo~User~
+        +category() BelongsTo~Category~
+        +replies() HasMany~Reply~
+        +assignees() BelongsToMany~User~
+        +screenshotUrl() string
+        +deleteScreenshot() void
+    }
+
+    class Reply {
+        +int id
+        +int ticket_id
+        +int user_id
+        +text message
+        +ticket() BelongsTo~Ticket~
+        +user() BelongsTo~User~
+    }
+
+    class Role {
+        <<enumeration>>
+        Student
+        Teacher
+        Admin
+        +label() string
+    }
+
+    class TicketStatus {
+        <<enumeration>>
+        Open
+        InProgress
+        Solved
+        Closed
+        +label() string
+    }
+
+    class TicketPriority {
+        <<enumeration>>
+        Normal
+        High
+        Urgent
+        +label() string
+    }
+
+    User "1" --> "*" Ticket : reports
+    Category "1" --> "*" Ticket : groups
+    Ticket "1" *-- "*" Reply : has
+    User "1" --> "*" Reply : writes
+    User "*" -- "*" Ticket : handles (ticket_user)
+
+    User ..> Role : role
+    Ticket ..> TicketStatus : status
+    Ticket ..> TicketPriority : priority

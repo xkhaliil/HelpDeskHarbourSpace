@@ -30,45 +30,19 @@ Every problem is a **ticket**. A ticket has a title, a category, a location, a d
 
 ## Models and relationships
 
-```mermaid
-classDiagram
-    direction LR
-    class User {
-        +int id
-        +string name
-        +string email
-        +string password
-        +Role role
-        +datetime approved_at
-    }
-    class Category {
-        +int id
-        +string name
-        +text description
-    }
-    class Ticket {
-        +int id
-        +int user_id
-        +int category_id
-        +string title
-        +text description
-        +string location
-        +TicketPriority priority
-        +TicketStatus status
-        +string screenshot
-    }
-    class Reply {
-        +int id
-        +int ticket_id
-        +int user_id
-        +text message
-    }
-    User "1" --> "*" Ticket : reports
-    Category "1" --> "*" Ticket : groups
-    Ticket "1" --> "*" Reply : has
-    User "1" --> "*" Reply : writes
-    User "*" <--> "*" Ticket : handles
-```
+### UML class diagram
+
+![UML class diagram of the 4 models, their relationships and the 3 enums](docs/uml/class-diagram.png)
+
+The diagram is also available as [SVG](docs/uml/class-diagram.svg), which stays sharp when you zoom in. Its source is [`docs/uml/class-diagram.mmd`](docs/uml/class-diagram.mmd) (Mermaid). Every table also has `created_at` and `updated_at`, which are left out of the diagram.
+
+How to read it:
+
+- Each box is a model (or an enum) with its columns at the top and its methods at the bottom.
+- `1` and `*` are the multiplicities: `User 1 → * Ticket` means one user reports many (zero or more) tickets.
+- The black diamond between `Ticket` and `Reply` is a composition: the replies belong to their ticket and are deleted with it.
+- The line without arrows between `User` and `Ticket` is the many-to-many relationship, saved in the pivot table `ticket_user`.
+- The dashed arrows show which enum a column uses (`Role`, `TicketStatus`, `TicketPriority`).
 
 | Relationship | Type | In the code |
 |---|---|---|
