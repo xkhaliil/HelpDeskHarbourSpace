@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -50,8 +51,11 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        /** @var User $user The user who just logged in (the comment tells the editor it is our User model). */
+        $user = Auth::user();
+
         // The password is correct, but an admin still has to approve this account.
-        if (! Auth::user()->isApproved()) {
+        if (! $user->isApproved()) {
             Auth::logout();
 
             throw ValidationException::withMessages([

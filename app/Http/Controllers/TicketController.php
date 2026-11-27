@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Category;
 use App\Models\Ticket;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -80,10 +81,10 @@ class TicketController extends Controller
     /**
      * Show one ticket of the logged-in user.
      */
-    public function show(Ticket $ticket): View|RedirectResponse
+    public function show(Request $request, Ticket $ticket): View|RedirectResponse
     {
         // Admins handle tickets on their own page in the admin panel.
-        if (auth()->user()->isAdmin()) {
+        if ($request->user()->isAdmin()) {
             return redirect()->route('admin.tickets.show', $ticket);
         }
 
@@ -98,10 +99,10 @@ class TicketController extends Controller
     /**
      * Show the form to edit an open ticket.
      */
-    public function edit(Ticket $ticket): View|RedirectResponse
+    public function edit(Request $request, Ticket $ticket): View|RedirectResponse
     {
         // Admins handle tickets on their own page in the admin panel.
-        if (auth()->user()->isAdmin()) {
+        if ($request->user()->isAdmin()) {
             return redirect()->route('admin.tickets.show', $ticket);
         }
 
